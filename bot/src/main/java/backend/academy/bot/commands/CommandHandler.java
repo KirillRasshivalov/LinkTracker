@@ -2,6 +2,7 @@ package backend.academy.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,6 +17,8 @@ public class CommandHandler {
         "/untrack", "прекратить отслеживание ссылки.",
         "/list", "показать список отслеживаемых ссылок."
     );
+
+    private static final List<String> commandsToServer = List.of("/update_link");
 
     public static String getListOfCommands() {
         StringBuilder listOfCommands = new StringBuilder();
@@ -32,5 +35,13 @@ public class CommandHandler {
             return currCommand.applyCommand(update);
         }
         return "Данная команда не поддерживается.";
+    }
+
+    public static String getCommandMessageToServer(String link, String message) {
+        if (commandsToServer.contains(link)) {
+            ServerCommands serverCommands = CommandFactory.getServerCommand(link);
+            return serverCommands.applyCommand(message);
+        }
+        return null;
     }
 }
