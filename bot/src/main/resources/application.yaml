@@ -1,5 +1,5 @@
 app:
-  telegram-token: ${TELEGRAM_TOKEN} # env variable
+  telegram-token: ${TELEGRAM_BOT_TOKEN} # env variable
 
 spring:
   application:
@@ -18,3 +18,5 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui
+
+
