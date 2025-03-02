@@ -112,6 +112,12 @@
             <artifactId>kafka</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>backend.academy</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
         <!--        <dependency>-->
         <!--            <groupId>org.springframework.kafka</groupId>-->
         <!--            <artifactId>spring-kafka-test</artifactId>-->
@@ -124,12 +130,26 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.36</version>
+                        </path>
+                        <path>
+                            <groupId>com.google.errorprone</groupId>
+                            <artifactId>error_prone_core</artifactId>
+                            <version>2.28.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Xplugin:ErrorProne</arg>
+                        <arg>-XDcompilePolicy=simple</arg> <!-- Требуется для ErrorProne -->
+                    </compilerArgs>
+                </configuration>
             </plugin>
-            <!-- To build OCI image: https://docs.spring.io/spring-boot/maven-plugin/build-image.html -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+
         </plugins>
     </build>
 </project>
