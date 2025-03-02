@@ -8,6 +8,6 @@ import com.pengrad.telegrambot.model.Update;
 public class UntrackCommand implements BotCommands {
     @Override
     public String applyCommand(Update update) {
-        return "команда для открепления ссылок";
+        return "Введите ссылку которую хотите открепить.";
     }
 }
