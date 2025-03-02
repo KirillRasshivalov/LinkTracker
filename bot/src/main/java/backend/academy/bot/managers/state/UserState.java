@@ -1,4 +1,4 @@
-package backend.academy.bot.managers;
+package backend.academy.bot.managers.state;
 
 /**
  * Енамы состояний запроса.

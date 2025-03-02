@@ -1,4 +1,4 @@
-package backend.academy.bot.managers;
+package backend.academy.bot.managers.state;
 
 import java.util.HashMap;
 import java.util.Map;

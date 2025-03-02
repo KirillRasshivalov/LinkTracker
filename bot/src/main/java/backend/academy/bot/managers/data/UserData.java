@@ -1,4 +1,4 @@
-package backend.academy.bot.managers;
+package backend.academy.bot.managers.data;
 
 /**
  * Рекорд класс в котором хранится информация о текущем запросе на добавление ссылок.
