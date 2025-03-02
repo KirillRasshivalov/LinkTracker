@@ -1,5 +1,6 @@
-package backend.academy.bot.commands;
+package backend.academy.bot.commands.local;
 
+import backend.academy.bot.commands.CommandHandler;
 import com.pengrad.telegrambot.model.Update;
 
 /**
