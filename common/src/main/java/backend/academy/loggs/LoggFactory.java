@@ -1,7 +1,5 @@
-package backend.academy.bot.loggs;
+package backend.academy.loggs;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.logging.FileHandler;
@@ -14,7 +12,6 @@ import java.util.logging.SimpleFormatter;
 @Component
 public class LoggFactory {
 
-    @Getter @Setter
     private static Logger logger = Logger.getLogger(LoggFactory.class.getName());
 
     public LoggFactory() throws IOException {
