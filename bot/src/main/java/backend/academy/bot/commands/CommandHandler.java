@@ -20,7 +20,12 @@ public class CommandHandler {
         "/list", "показать список отслеживаемых ссылок."
     );
 
-    private static final List<String> commandsToServer = List.of("/add_link");
+    private static final List<String> commandsToServer = List.of(
+        "/add_link",
+        "/register_user",
+        "/show_links",
+        "/delete_link"
+    );
 
     public static String getListOfCommands() {
         StringBuilder listOfCommands = new StringBuilder();
