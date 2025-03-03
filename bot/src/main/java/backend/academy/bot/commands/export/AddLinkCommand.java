@@ -1,19 +1,13 @@
 package backend.academy.bot.commands.export;
 
-import backend.academy.bot.services.ServerData;
-import backend.academy.dto.AddLinkResponseDTO;
 import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.AddLinkRequestDTO;
-import backend.academy.loggs.LoggFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.model.Update;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;

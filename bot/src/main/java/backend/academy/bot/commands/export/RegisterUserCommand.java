@@ -1,6 +1,5 @@
 package backend.academy.bot.commands.export;
 
-import backend.academy.bot.services.ServerData;
 import backend.academy.dto.BadResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.model.Update;
