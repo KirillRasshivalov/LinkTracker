@@ -1,6 +1,5 @@
-package backend.academy.bot.commands;
+package backend.academy.bot.commands.local;
 
-import backend.academy.bot.commands.local.BotCommands;
 import com.pengrad.telegrambot.model.Update;
 
 /**
@@ -9,6 +8,6 @@ import com.pengrad.telegrambot.model.Update;
 public class ListCommand implements BotCommands {
     @Override
     public String applyCommand(Update update) {
-        return "список";
+        return "Ожидайте...";
     }
 }
