@@ -13,6 +13,16 @@ public class AddLinkResponseDTO {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "AddLinkResponseDTO{" +
+            "id='" + id + '\'' +
+            ", url='" + url + '\'' +
+            ", tags=" + tags +
+            ", filters=" + filters +
+            '}';
+    }
+
     public void setUrl(String url) {
         this.url = url;
     }
