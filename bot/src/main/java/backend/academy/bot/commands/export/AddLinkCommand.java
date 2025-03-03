@@ -1,5 +1,6 @@
 package backend.academy.bot.commands.export;
 
+import backend.academy.bot.services.ServerData;
 import backend.academy.dto.AddLinkResponseDTO;
 import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.AddLinkRequestDTO;
@@ -9,7 +10,11 @@ import com.pengrad.telegrambot.model.Update;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.DefaultResponseErrorHandler;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +30,9 @@ public class AddLinkCommand implements ServerCommands {
 
     @Override
     public String applyCommand(@NotNull String command, @NotNull Update update) {
-        loggFactory.addLog("Команда на добавление ссылки " + command);
+        loggFactory.addBotLog("Команда на добавление ссылки " + command);
         AddLinkRequestDTO collectionUpdateRequestDTO = new AddLinkRequestDTO();
+        String serverUrl = "http://localhost:8081/links";
 
         String[] parts = command.split(" < ");
         String link = parts[0].trim();
@@ -39,39 +45,35 @@ public class AddLinkCommand implements ServerCommands {
         collectionUpdateRequestDTO.setTags(tags);
         collectionUpdateRequestDTO.setFilters(filters);
 
-        String serverUrl = "http://localhost:8081/links";
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("tg-chat-id", update.message().chat().id().toString());
         HttpEntity<AddLinkRequestDTO> requestEntity = new HttpEntity<>(collectionUpdateRequestDTO, headers);
 
         try {
-            ResponseEntity<?> response = restTemplate.postForEntity(
+            ResponseEntity<String> response = restTemplate.postForEntity(
                 serverUrl,
                 requestEntity,
                 String.class
             );
-            if (response.hasBody()) {
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    AddLinkResponseDTO collectionUpdateResponseDTO = objectMapper.readValue(
-                        response.getBody().toString(),
-                        AddLinkResponseDTO.class
-                    );
-                    return "Ссылка " + collectionUpdateResponseDTO.getUrl() + " успешно добавлена.";
-                } else if (response.getStatusCode().is4xxClientError()) {
-                    BadResponseDTO badResponseDTO = objectMapper.readValue(
-                        response.getBody().toString(),
-                        BadResponseDTO.class
-                    );
-                    return badResponseDTO.getExceptionName();
-                } else {
-                    LoggFactory.addLog("Неопознаная ошибка" + response.getStatusCode());
-                    return "Что то пошло не так.";
-                }
+            loggFactory.addBotLog("Ответ от сервера: " + response.getStatusCode() + " - " + response.getBody());
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return "Ссылка успешно добавлена.";
+            } else {
+                return "Ошибка: " + response.getStatusCode();
+            }
+        } catch (HttpClientErrorException e) {
+            loggFactory.addBotLog("Ошибка 400: " + e.getResponseBodyAsString());
+            try {
+                BadResponseDTO errorResponse = objectMapper.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
+                return errorResponse.getDescription();
+            } catch (Exception jsonException) {
+                loggFactory.addBotLog("Ошибка при разборе JSON ответа: " + jsonException.getMessage());
+                return "Ошибка 400, но не удалось разобрать ответ.";
             }
         } catch (Exception e) {
-            LoggFactory.addLog(e.getMessage());
+            loggFactory.addBotLog("Неизвестная ошибка: " + e);
+            return "Что-то пошло не так.";
         }
-        return null;
     }
 }
