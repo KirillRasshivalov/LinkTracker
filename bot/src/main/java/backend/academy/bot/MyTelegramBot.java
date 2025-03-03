@@ -6,6 +6,7 @@ import backend.academy.bot.managers.data.UserData;
 import backend.academy.bot.managers.data.UserDataManager;
 import backend.academy.bot.managers.state.UserState;
 import backend.academy.bot.managers.state.UserStateManager;
+import backend.academy.bot.services.UrlValidator;
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
@@ -33,6 +34,8 @@ public class MyTelegramBot {
 
     private List<String> chatsIds = new ArrayList<>();
 
+    private static final String INCORRECT_URL = "Ссылка не корректна.";
+
     private TelegramBot bot;
 
     private final BotConfig config;
@@ -42,7 +45,7 @@ public class MyTelegramBot {
 
     @PostConstruct
     public void init() throws IOException {
-        loggFactory.addLog("Зупускаем телеграм бот.");
+        loggFactory.addBotLog("Зупускаем телеграм бот.");
         bot = new TelegramBot(config.telegramToken());
 
         BotCommand[] commands = ListBotCommands.getCommandsArray();
@@ -63,7 +66,7 @@ public class MyTelegramBot {
             String messageText = update.message().text();
             long chatId = update.message().chat().id();
             UserData userData = userDataManager.getUserData(chatId);
-            loggFactory.addLog("Получено " + messageText + " от " + chatId);
+            loggFactory.addBotLog("Получено " + messageText + " от " + chatId);
             chatsIds.add(String.valueOf(chatId));
 
             UserState currentState = userStateManager.getUserState(chatId);
@@ -80,15 +83,32 @@ public class MyTelegramBot {
                     } else {
                         SendMessage botReply = new SendMessage(chatId, CommandHandler.getCommandMessage(update));
                         bot.execute(botReply);
+                        if (messageText.equals("/start")) {
+                            SendMessage botReply2 = new SendMessage(chatId, CommandHandler.getCommandMessageToServer("/register_user", null, update));
+                            bot.execute(botReply2);
+                        } else if (messageText.equals("/list")) {
+                            SendMessage botReply2 = new SendMessage(chatId, CommandHandler.getCommandMessageToServer("/show_links", null, update));
+                            bot.execute(botReply2);
+                        }
                     }
                     break;
                 case WAITING_FOR_LINK_TO_DELETE:
+                    if (!UrlValidator.isValidUrl(messageText)) {
+                        userStateManager.setUserState(chatId, UserState.DIALOG);
+                        bot.execute(new SendMessage(chatId, INCORRECT_URL));
+                        break;
+                    }
                     userData = new UserData(messageText, userData.filter(), userData.tag());
                     userDataManager.setUserData(chatId, userData);
                     userStateManager.setUserState(chatId, UserState.DIALOG);
-                    bot.execute(new SendMessage(chatId, CommandHandler.getCommandMessage(update)));
+                    bot.execute(new SendMessage(chatId, CommandHandler.getCommandMessageToServer("/delete_link", messageText, update)));
                     break;
                 case WAITING_FOR_LINK:
+                    if (!UrlValidator.isValidUrl(messageText)) {
+                        userStateManager.setUserState(chatId, UserState.DIALOG);
+                        bot.execute(new SendMessage(chatId, INCORRECT_URL));
+                        break;
+                    }
                     userData = new UserData(messageText, userData.filter(), userData.tag());
                     userDataManager.setUserData(chatId, userData);
                     userStateManager.setUserState(chatId, UserState.WAITING_FOR_FILTER);
@@ -104,7 +124,7 @@ public class MyTelegramBot {
                     userData = new UserData(userData.link(), userData.filter(), messageText);
                     userDataManager.setUserData(chatId, userData);
                     userStateManager.setUserState(chatId, UserState.DIALOG);
-                    String fullLink = userData.link() + "<" + userData.filter() + "<" + userData.tag();
+                    String fullLink = userData.link() + " < " + userData.filter() + " < " + userData.tag();
                     bot.execute(new SendMessage(chatId, CommandHandler.getCommandMessageToServer("/add_link", fullLink, update)));
                     break;
             }
