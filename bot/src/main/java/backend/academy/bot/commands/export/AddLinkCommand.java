@@ -1,19 +1,18 @@
 package backend.academy.bot.commands.export;
 
-import backend.academy.dto.AddLinkResponseDTO;
-import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.AddLinkRequestDTO;
+import backend.academy.dto.BadResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.model.Update;
 import jakarta.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import static backend.academy.bot.LoggComponent.loggFactory;
 
 /**
@@ -21,11 +20,13 @@ import static backend.academy.bot.LoggComponent.loggFactory;
  */
 public class AddLinkCommand implements ServerCommands {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private AddLinkRequestDTO lastRequestDTO;
 
     @Override
     public String applyCommand(@NotNull String command, @NotNull Update update) {
+
         loggFactory.addBotLog("Команда на добавление ссылки " + command);
         AddLinkRequestDTO collectionUpdateRequestDTO = new AddLinkRequestDTO();
         String serverUrl = "http://localhost:8081/links";
@@ -62,14 +63,20 @@ public class AddLinkCommand implements ServerCommands {
         } catch (HttpClientErrorException e) {
             loggFactory.addBotLog("Ошибка 400: " + e.getResponseBodyAsString());
             try {
-                BadResponseDTO errorResponse = objectMapper.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
+                BadResponseDTO errorResponse = OBJECT_MAPPER.readValue(
+                    e.getResponseBodyAsString(),
+                    BadResponseDTO.class
+                );
+
                 return errorResponse.getDescription();
             } catch (Exception jsonException) {
                 loggFactory.addBotLog("Ошибка при разборе JSON ответа: " + jsonException.getMessage());
+
                 return "Ошибка 400, но не удалось разобрать ответ.";
             }
         } catch (Exception e) {
             loggFactory.addBotLog("Неизвестная ошибка: " + e);
+
             return "Что-то пошло не так.";
         }
     }

@@ -2,15 +2,15 @@ package backend.academy.scrapper.controllers;
 
 import backend.academy.dto.LinkInfoDTO;
 import backend.academy.dto.ShowListResponseDTO;
+import backend.academy.scrapper.data.LinkData;
 import backend.academy.scrapper.managers.Collection;
 import backend.academy.scrapper.managers.ErrorHandler;
-import backend.academy.scrapper.data.LinkData;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.ArrayList;
-import java.util.List;
 import static backend.academy.scrapper.components.LogComponent.loggFactory;
 
 /**
@@ -22,7 +22,9 @@ public class ShowLinkController {
     @GetMapping("/links")
     public ResponseEntity<?> showLink(@RequestHeader("tg-chat-id") String chatId) {
         loggFactory.addServerLog("Пришел запрос на показ действующий ссылок " + chatId);
+
         Long id = Long.parseLong(chatId);
+
         if (Collection.idInfo.containsKey(id)) {
             ShowListResponseDTO showListResponseDTO = new ShowListResponseDTO();
             List<LinkData> linkInfoDTOS = Collection.idInfo.get(id);
@@ -37,6 +39,7 @@ public class ShowLinkController {
             }
             showListResponseDTO.setLinks(linkInfoDTOList);
             showListResponseDTO.setSize((long) linkInfoDTOList.size());
+
             return ResponseEntity.ok().body(showListResponseDTO);
         } else {
             return ResponseEntity.badRequest().body(ErrorHandler.userHasNoLinks());

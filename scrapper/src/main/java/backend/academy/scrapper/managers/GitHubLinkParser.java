@@ -11,6 +11,7 @@ public class GitHubLinkParser {
         }
         String owner = parts[3];
         String repo = parts[4];
+
         return new GitHubLink(owner, repo);
     }
 

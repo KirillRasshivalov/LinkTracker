@@ -19,6 +19,7 @@ public class RegisterUserController {
     @PostMapping("/{id}")
     public ResponseEntity<?> addActiveUser(@PathVariable String id) {
         loggFactory.addServerLog("Пришел запрос на регистрацию пользователя " + id);
+
         if (Collection.activeUsers.contains(Long.valueOf(id))) {
             return ResponseEntity.badRequest().body(ErrorHandler.chatHasAlreadyExist());
         } else {

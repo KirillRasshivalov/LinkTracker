@@ -19,9 +19,11 @@ public class UpdateLinkController {
     public ResponseEntity<?> notifyUser(@RequestBody LinkUpdateRequestDTO linkUpdateRequestDTO) {
         try {
             notificationMessage(linkUpdateRequestDTO.getTgChatIds(), linkUpdateRequestDTO.getDescription());
+
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
+
             return ResponseEntity.badRequest().build();
         }
     }

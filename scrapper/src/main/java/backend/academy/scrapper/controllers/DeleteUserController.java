@@ -19,6 +19,7 @@ public class DeleteUserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") String id) {
         loggFactory.addServerLog("Пришел запрос на eдаление пользователя " + id);
+
         if (!Collection.activeUsers.contains(Long.valueOf(id))) {
             return ResponseEntity.badRequest().body(ErrorHandler.userNotExist());
         } else {

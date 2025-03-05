@@ -1,7 +1,6 @@
 package backend.academy.scrapper.managers;
 
 import backend.academy.dto.BadResponseDTO;
-
 import java.util.List;
 
 /**

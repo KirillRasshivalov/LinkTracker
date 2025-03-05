@@ -14,14 +14,17 @@ import static backend.academy.bot.LoggComponent.loggFactory;
  */
 public class DeleteUserCommand implements ServerCommands {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
     public String applyCommand(String command, Update update) {
+
         loggFactory.addBotLog("Команда на удаления пользователя " + command);
+
         String serverUrl = "http://localhost:8081/links";
         RestTemplate restTemplate = new RestTemplate();
         String id = update.message().chat().id().toString();
+
         try {
             ResponseEntity<String> response = restTemplate.exchange(
                 serverUrl,
@@ -39,14 +42,20 @@ public class DeleteUserCommand implements ServerCommands {
         } catch (HttpClientErrorException e) {
             loggFactory.addBotLog("Ошибка 400: " + e.getResponseBodyAsString());
             try {
-                BadResponseDTO errorResponse = objectMapper.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
+                BadResponseDTO errorResponse = OBJECT_MAPPER.readValue(
+                    e.getResponseBodyAsString(),
+                    BadResponseDTO.class
+                );
+
                 return errorResponse.getDescription();
             } catch (Exception jsonException) {
                 loggFactory.addBotLog("Ошибка при разборе JSON ответа: " + jsonException.getMessage());
+
                 return "Ошибка 400, но не удалось разобрать ответ.";
             }
         } catch (Exception e) {
             loggFactory.addBotLog("Неизвестная ошибка: " + e);
+
             return "Что-то пошло не так.";
         }
     }

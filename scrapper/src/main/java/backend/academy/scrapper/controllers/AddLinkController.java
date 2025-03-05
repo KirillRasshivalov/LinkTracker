@@ -2,13 +2,15 @@ package backend.academy.scrapper.controllers;
 
 import backend.academy.dto.AddLinkRequestDTO;
 import backend.academy.dto.AddLinkResponseDTO;
+import backend.academy.scrapper.data.LinkData;
 import backend.academy.scrapper.managers.Collection;
 import backend.academy.scrapper.managers.ErrorHandler;
-import backend.academy.scrapper.data.LinkData;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 import static backend.academy.scrapper.components.LogComponent.loggFactory;
 
 /**
@@ -24,9 +26,11 @@ public class AddLinkController {
     ) {
 
         loggFactory.addServerLog("Пришел запрос на добавление ссылки от " + chatId);
+
         LinkData linkData = new LinkData(requestDTO.link, requestDTO.filters, requestDTO.tags);
         Long id = Long.valueOf(chatId);
         Collection.activeUsers.add(id);
+
         if (!Collection.idInfo.containsKey(id) || !Collection.idInfo.get(id).contains(linkData)) {
             if (Collection.idInfo.containsKey(id)) {
                 Collection.idInfo.get(Long.valueOf(chatId)).add(linkData);
@@ -45,6 +49,7 @@ public class AddLinkController {
             responseDTO.setUrl(requestDTO.getLink());
             responseDTO.setFilters(requestDTO.getFilters());
             responseDTO.setTags(requestDTO.getTags());
+
             return ResponseEntity.ok(responseDTO);
         } else {
             return ResponseEntity.badRequest().body(ErrorHandler.sameLinkError());

@@ -1,8 +1,8 @@
 package backend.academy.scrapper.components;
 
 import backend.academy.loggs.LoggFactory;
-import org.springframework.stereotype.Component;
 import java.io.IOException;
+import org.springframework.stereotype.Component;
 
 @Component
 public class LogComponent {

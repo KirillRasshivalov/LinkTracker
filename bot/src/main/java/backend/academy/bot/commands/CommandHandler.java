@@ -3,7 +3,6 @@ package backend.academy.bot.commands;
 import backend.academy.bot.commands.export.ServerCommands;
 import backend.academy.bot.commands.local.BotCommands;
 import com.pengrad.telegrambot.model.Update;
-
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,7 @@ import java.util.Map;
  */
 public class CommandHandler {
 
-    public static final Map<String, String> commands = Map.of(
+    public static final Map<String, String> COMMANDS = Map.of(
         "/start", "регистрация пользователя.",
         "/help", "вывод списка доступных команд.",
         "/track", "начать отслеживание ссылки.",
@@ -20,7 +19,7 @@ public class CommandHandler {
         "/list", "показать список отслеживаемых ссылок."
     );
 
-    private static final List<String> commandsToServer = List.of(
+    private static final List<String> COMMANDS_TO_SERVER = List.of(
         "/add_link",
         "/register_user",
         "/show_links",
@@ -29,26 +28,31 @@ public class CommandHandler {
 
     public static String getListOfCommands() {
         StringBuilder listOfCommands = new StringBuilder();
-        for (String command : commands.keySet()) {
-            listOfCommands.append(command).append(" - ").append(commands.get(command));
+        for (String command : COMMANDS.keySet()) {
+            listOfCommands.append(command).append(" - ").append(COMMANDS.get(command));
             listOfCommands.append("\n");
         }
+
         return listOfCommands.toString();
     }
 
     public static String getCommandMessage(Update update) {
-        if (commands.containsKey(update.message().text())) {
+        if (COMMANDS.containsKey(update.message().text())) {
             BotCommands currCommand = CommandFactory.getCommand(update.message().text());
+
             return currCommand.applyCommand(update);
         }
+
         return "Данная команда не поддерживается.";
     }
 
     public static String getCommandMessageToServer(String link, String message, Update update) {
-        if (commandsToServer.contains(link)) {
+        if (COMMANDS_TO_SERVER.contains(link)) {
             ServerCommands serverCommands = CommandFactory.getServerCommand(link);
+
             return serverCommands.applyCommand(message, update);
         }
+
         return null;
     }
 }

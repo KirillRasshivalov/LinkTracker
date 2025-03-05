@@ -3,10 +3,10 @@ package backend.academy.scrapper.servises;
 import backend.academy.dto.StackOverflowResponseDTO;
 import backend.academy.scrapper.ScrapperConfig;
 import backend.academy.scrapper.managers.StackOverflowLinkParser;
+import java.time.Instant;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import java.time.Instant;
 
 /**
  * Класс для инициализации и отправки запросов на проверку обновления ссылок на стековерфлоу.
@@ -14,24 +14,24 @@ import java.time.Instant;
 @Service
 public class StackOverflowService {
 
-    private final WebClient webClient;
-    private final String stackoverflowKey;
-    private final String stackoverflowAccessToken;
+    private final WebClient WEB_CLIENT;
+    private final String STACKOVERFLOW_KEY;
+    private final String STACKOVERFLOW_ACCESS_TOKEN;
 
     public StackOverflowService(WebClient.Builder webClientBuilder, ScrapperConfig appConfig) {
-        this.webClient = webClientBuilder.baseUrl("https://api.stackexchange.com/2.3").build();
-        this.stackoverflowKey = appConfig.stackOverflow().key();
-        this.stackoverflowAccessToken = appConfig.stackOverflow().accessToken();
+        this.WEB_CLIENT = webClientBuilder.baseUrl("https://api.stackexchange.com/2.3").build();
+        this.STACKOVERFLOW_KEY = appConfig.stackOverflow().key();
+        this.STACKOVERFLOW_ACCESS_TOKEN = appConfig.stackOverflow().accessToken();
     }
 
     public Mono<Instant> getLastActivityDate(String url) {
         String questionId = StackOverflowLinkParser.parseQuestionId(url);
-        return webClient.get()
+        return WEB_CLIENT.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/questions/{id}")
                 .queryParam("site", "stackoverflow")
-                .queryParam("key", stackoverflowKey)
-                .queryParam("access_token", stackoverflowAccessToken)
+                .queryParam("key", STACKOVERFLOW_KEY)
+                .queryParam("access_token", STACKOVERFLOW_ACCESS_TOKEN)
                 .build(questionId))
             .retrieve()
             .bodyToMono(StackOverflowResponseDTO.class)

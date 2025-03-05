@@ -1,10 +1,10 @@
 package backend.academy.loggs;
 
-import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import org.springframework.stereotype.Component;
 
 /**
  * Класс для сохранения логов в один файл.

@@ -1,6 +1,5 @@
 package backend.academy.bot.commands.export;
 
-import backend.academy.dto.AddLinkRequestDTO;
 import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.ShowListResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,12 +22,16 @@ public class ShowLinksCommand implements ServerCommands{
 
     @Override
     public String applyCommand(String message, Update update) {
+
         loggFactory.addBotLog("Команда на показ всех доступнух пользователю ссылок " + message);
+
         String serverUrl = "http://localhost:8081/links";
+
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("tg-chat-id", update.message().chat().id().toString());
         HttpEntity<?> requestEntity = new HttpEntity<>(null, headers);
+
         try {
             ResponseEntity<String> response = restTemplate.exchange(
                 serverUrl,

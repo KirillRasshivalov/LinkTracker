@@ -18,10 +18,13 @@ public class RegisterUserCommand implements ServerCommands {
 
     @Override
     public String applyCommand(String command, Update update) {
+
         loggFactory.addBotLog("Команда на добавление пользователя " + command);
+
         String serverUrl = "http://localhost:8081/tg-chat/{id}";
         String id = update.message().chat().id().toString();
         RestTemplate restTemplate = new RestTemplate();
+
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(
                 serverUrl,
@@ -38,14 +41,20 @@ public class RegisterUserCommand implements ServerCommands {
         } catch (HttpClientErrorException e) {
             loggFactory.addBotLog("Ошибка 400: " + e.getResponseBodyAsString());
             try {
-                BadResponseDTO errorResponse = objectMapper.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
+                BadResponseDTO errorResponse = objectMapper.readValue(
+                    e.getResponseBodyAsString(),
+                    BadResponseDTO.class
+                );
+
                 return errorResponse.getDescription();
             } catch (Exception jsonException) {
                 loggFactory.addBotLog("Ошибка при разборе JSON ответа: " + jsonException.getMessage());
+
                 return "Ошибка 400, но не удалось разобрать ответ.";
             }
         } catch (Exception e) {
             loggFactory.addBotLog("Неизвестная ошибка: " + e);
+
             return "Что-то пошло не так.";
         }
     }
