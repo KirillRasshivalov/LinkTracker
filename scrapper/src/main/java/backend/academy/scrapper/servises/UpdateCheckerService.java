@@ -76,7 +76,7 @@ public class UpdateCheckerService {
         }
         linkUpdateRequestDTO.setTgChatIds(chatsId);
         linkUpdateRequestDTO.setDescription("Пришло обновление по ссылке: " + link);
-        String botUrl = "http://localhost:8080/";
+        String botUrl = "http://localhost:8080/updates";
         HttpEntity<LinkUpdateRequestDTO> httpEntity = new HttpEntity<>(linkUpdateRequestDTO);
         ResponseEntity<String> response = restTemplate.exchange(
             botUrl,

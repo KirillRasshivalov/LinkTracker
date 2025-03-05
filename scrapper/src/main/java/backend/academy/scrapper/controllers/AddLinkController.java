@@ -22,6 +22,7 @@ public class AddLinkController {
         @RequestBody AddLinkRequestDTO requestDTO,
         @RequestHeader("tg-chat-id") String chatId
     ) {
+
         loggFactory.addServerLog("Пришел запрос на добавление ссылки от " + chatId);
         LinkData linkData = new LinkData(requestDTO.link, requestDTO.filters, requestDTO.tags);
         Long id = Long.valueOf(chatId);
