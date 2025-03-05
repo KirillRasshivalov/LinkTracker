@@ -1,5 +1,6 @@
 package backend.academy.bot.commands.export;
 
+import backend.academy.dto.AddLinkResponseDTO;
 import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.AddLinkRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +22,7 @@ import static backend.academy.bot.LoggComponent.loggFactory;
 public class AddLinkCommand implements ServerCommands {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private AddLinkRequestDTO lastRequestDTO;
 
     @Override
     public String applyCommand(@NotNull String command, @NotNull Update update) {
@@ -38,6 +40,7 @@ public class AddLinkCommand implements ServerCommands {
         collectionUpdateRequestDTO.setLink(link);
         collectionUpdateRequestDTO.setTags(tags);
         collectionUpdateRequestDTO.setFilters(filters);
+        this.lastRequestDTO = collectionUpdateRequestDTO;
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -69,5 +72,9 @@ public class AddLinkCommand implements ServerCommands {
             loggFactory.addBotLog("Неизвестная ошибка: " + e);
             return "Что-то пошло не так.";
         }
+    }
+
+    public AddLinkRequestDTO getLastRequestDTO() {
+        return lastRequestDTO;
     }
 }
