@@ -36,7 +36,7 @@ public class MyTelegramBot {
 
     private static final String INCORRECT_URL = "Ссылка не корректна.";
 
-    private TelegramBot bot;
+    private static TelegramBot bot;
 
     private final BotConfig config;
 
@@ -59,6 +59,13 @@ public class MyTelegramBot {
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
+    }
+
+    public static void notificationMessage(@NotNull List<Long> id, @NotNull String message) {
+        for (int i = 0; i < id.size(); i++) {
+            SendMessage botReply = new SendMessage(id.get(i), message);
+            bot.execute(botReply);
+        }
     }
 
     private void handleUpdate(@NotNull Update update) {
