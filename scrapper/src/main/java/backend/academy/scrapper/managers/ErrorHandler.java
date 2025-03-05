@@ -1,9 +1,12 @@
-package backend.academy.scrapper;
+package backend.academy.scrapper.managers;
 
 import backend.academy.dto.BadResponseDTO;
-import java.util.ArrayList;
+
 import java.util.List;
 
+/**
+ * Класс кастомных ответов на ошибки которые произошли на сервере.
+ */
 public class ErrorHandler {
 
     public static BadResponseDTO sameLinkError() {
@@ -41,6 +44,13 @@ public class ErrorHandler {
         BadResponseDTO badResponseDTO = new BadResponseDTO();
         badResponseDTO.setCode("400");
         badResponseDTO.setDescription("Такой ссылки вы не отслеживали.");
+        return badResponseDTO;
+    }
+
+    public static BadResponseDTO unrespectedError() {
+        BadResponseDTO badResponseDTO = new BadResponseDTO();
+        badResponseDTO.setCode("400");
+        badResponseDTO.setDescription("Произошла непредвиденная ошибка.");
         return badResponseDTO;
     }
 }
