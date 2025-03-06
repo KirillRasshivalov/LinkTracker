@@ -65,7 +65,7 @@ public class MyTelegramBot {
         }
     }
 
-    private void handleUpdate(@NotNull Update update) {
+    public void handleUpdate(@NotNull Update update) {
         if (update.message() != null && update.message().text() != null) {
             String messageText = update.message().text();
             long chatId = update.message().chat().id();

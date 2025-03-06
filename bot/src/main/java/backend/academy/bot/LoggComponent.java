@@ -1,8 +1,8 @@
 package backend.academy.bot;
 
 import backend.academy.loggs.LoggFactory;
-import java.io.IOException;
 import org.springframework.stereotype.Component;
+import java.io.IOException;
 
 @Component
 public class LoggComponent {
@@ -11,9 +11,5 @@ public class LoggComponent {
 
     public LoggComponent() throws IOException {
         loggFactory = new LoggFactory();
-    }
-
-    public static LoggFactory getLoggFactory() {
-        return loggFactory;
     }
 }
