@@ -1,5 +1,6 @@
 package backend.academy.bot.commands.export;
 
+import backend.academy.bot.managers.links.LinksDataParser;
 import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.ShowListResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,15 +42,8 @@ public class ShowLinksCommand implements ServerCommands{
             );
             loggFactory.addBotLog("Ответ от сервера: " + response.getStatusCode() + " - " + response.getBody());
             if (response.getStatusCode().is2xxSuccessful()) {
-                StringBuilder answer = new StringBuilder("Список отслеживаемых ссылок:\n");
                 ShowListResponseDTO showListResponseDTO = objectMapper.readValue(response.getBody(), ShowListResponseDTO.class);
-                for (int i = 0; i < showListResponseDTO.links.size(); i++) {
-                    answer.append("Ссылка: ").append(showListResponseDTO.links.get(i).url()).append("\n");
-                    answer.append("Теги: ").append(showListResponseDTO.links.get(i).tags()).append("\n");
-                    answer.append("Фильтры: ").append(showListResponseDTO.links.get(i).filters()).append("\n");
-                    answer.append("\n");
-                }
-                return answer.toString();
+                return LinksDataParser.parseInfo(showListResponseDTO);
             } else {
                 return "Ошибка: " + response.getStatusCode();
             }
