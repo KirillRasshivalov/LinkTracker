@@ -27,13 +27,12 @@ public class BadResponseDTO {
 
     @Override
     public String toString() {
-        return "BadResponseDTO{" +
-            "description='" + description + '\'' +
-            ", code='" + code + '\'' +
-            ", exceptionName='" + exceptionName + '\'' +
-            ", exceptionMessage='" + exceptionMessage + '\'' +
-            ", stacktrace=" + stacktrace +
-            '}';
+        return "BadResponseDTO{" + "description='"
+                + description + '\'' + ", code='"
+                + code + '\'' + ", exceptionName='"
+                + exceptionName + '\'' + ", exceptionMessage='"
+                + exceptionMessage + '\'' + ", stacktrace="
+                + stacktrace + '}';
     }
 
     public void setStacktrace(List<String> stacktrace) {

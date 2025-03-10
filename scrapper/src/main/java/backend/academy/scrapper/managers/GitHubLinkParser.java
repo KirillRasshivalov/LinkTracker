@@ -1,8 +1,6 @@
 package backend.academy.scrapper.managers;
 
-/**
- * Класс для парсинга ссылок на гитхаб.
- */
+/** Класс для парсинга ссылок на гитхаб. */
 public class GitHubLinkParser {
     public static GitHubLink parse(String url) {
         String[] parts = url.split("/");

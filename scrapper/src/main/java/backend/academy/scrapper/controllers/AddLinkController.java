@@ -1,5 +1,7 @@
 package backend.academy.scrapper.controllers;
 
+import static backend.academy.scrapper.components.LogComponent.loggFactory;
+
 import backend.academy.dto.AddLinkRequestDTO;
 import backend.academy.dto.AddLinkResponseDTO;
 import backend.academy.scrapper.data.LinkData;
@@ -11,19 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import static backend.academy.scrapper.components.LogComponent.loggFactory;
 
-/**
- * Контроллер на добавление отслеживаемых ссылок.
- */
+/** Контроллер на добавление отслеживаемых ссылок. */
 @RestController
 public class AddLinkController {
 
     @PostMapping("/links")
     public ResponseEntity<?> updateCollection(
-        @RequestBody AddLinkRequestDTO requestDTO,
-        @RequestHeader("tg-chat-id") String chatId
-    ) {
+            @RequestBody AddLinkRequestDTO requestDTO, @RequestHeader("tg-chat-id") String chatId) {
 
         loggFactory.addServerLog("Пришел запрос на добавление ссылки от " + chatId);
 

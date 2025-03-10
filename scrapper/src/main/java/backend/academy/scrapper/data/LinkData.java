@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * Рекорд для хранения состояния ссылок
+ *
  * @param link - сама ссылка
  * @param filter - филтры
  * @param tags - тэги

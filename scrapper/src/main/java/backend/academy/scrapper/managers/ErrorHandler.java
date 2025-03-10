@@ -3,9 +3,7 @@ package backend.academy.scrapper.managers;
 import backend.academy.dto.BadResponseDTO;
 import java.util.List;
 
-/**
- * Класс кастомных ответов на ошибки которые произошли на сервере.
- */
+/** Класс кастомных ответов на ошибки которые произошли на сервере. */
 public class ErrorHandler {
 
     public static BadResponseDTO sameLinkError() {

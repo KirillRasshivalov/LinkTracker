@@ -145,7 +145,8 @@
                     </annotationProcessorPaths>
                     <compilerArgs>
                         <arg>-Xplugin:ErrorProne</arg>
-                        <arg>-XDcompilePolicy=simple</arg> <!-- Требуется для ErrorProne -->
+                        <arg>-XDcompilePolicy=simple</arg>
+                        <!-- Требуется для ErrorProne -->
                     </compilerArgs>
                 </configuration>
             </plugin>

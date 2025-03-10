@@ -1,5 +1,7 @@
 package backend.academy.bot.commands.export;
 
+import static backend.academy.bot.LoggComponent.loggFactory;
+
 import backend.academy.dto.BadResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.model.Update;
@@ -7,11 +9,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import static backend.academy.bot.LoggComponent.loggFactory;
 
-/**
- * Класс для удаления юзера из активных на сервере.
- */
+/** Класс для удаления юзера из активных на сервере. */
 public class DeleteUserCommand implements ServerCommands {
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -26,13 +25,8 @@ public class DeleteUserCommand implements ServerCommands {
         String id = update.message().chat().id().toString();
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                serverUrl,
-                HttpMethod.DELETE,
-                null,
-                String.class,
-                id
-            );
+            ResponseEntity<String> response =
+                    restTemplate.exchange(serverUrl, HttpMethod.DELETE, null, String.class, id);
             loggFactory.addBotLog("Ответ от сервера: " + response.getStatusCode() + " - " + response.getBody());
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "Чат успешно удален.";
@@ -42,10 +36,8 @@ public class DeleteUserCommand implements ServerCommands {
         } catch (HttpClientErrorException e) {
             loggFactory.addBotLog("Ошибка 400: " + e.getResponseBodyAsString());
             try {
-                BadResponseDTO errorResponse = OBJECT_MAPPER.readValue(
-                    e.getResponseBodyAsString(),
-                    BadResponseDTO.class
-                );
+                BadResponseDTO errorResponse =
+                        OBJECT_MAPPER.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
 
                 return errorResponse.getDescription();
             } catch (Exception jsonException) {

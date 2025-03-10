@@ -1,5 +1,7 @@
 package backend.academy.bot.commands.export;
 
+import static backend.academy.bot.LoggComponent.loggFactory;
+
 import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.DeleteLinkRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,11 +12,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import static backend.academy.bot.LoggComponent.loggFactory;
 
-/**
- * Класс для удаления ссылки введенной пользователем с сервера.
- */
+/** Класс для удаления ссылки введенной пользователем с сервера. */
 public class DeleteLinkCommand implements ServerCommands {
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -33,12 +32,8 @@ public class DeleteLinkCommand implements ServerCommands {
         HttpEntity<DeleteLinkRequestDTO> requestEntity = new HttpEntity<>(deleteLinkRequestDTO, headers);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                serverUrl,
-                HttpMethod.DELETE,
-                requestEntity,
-                String.class
-            );
+            ResponseEntity<String> response =
+                    restTemplate.exchange(serverUrl, HttpMethod.DELETE, requestEntity, String.class);
             loggFactory.addBotLog("Ответ от сервера: " + response.getStatusCode() + " - " + response.getBody());
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "Ссылка успешно удалена.";
@@ -48,10 +43,8 @@ public class DeleteLinkCommand implements ServerCommands {
         } catch (HttpClientErrorException e) {
             loggFactory.addBotLog("Ошибка 400: " + e.getResponseBodyAsString());
             try {
-                BadResponseDTO errorResponse = OBJECT_MAPPER.readValue(
-                    e.getResponseBodyAsString(),
-                    BadResponseDTO.class
-                );
+                BadResponseDTO errorResponse =
+                        OBJECT_MAPPER.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
 
                 return errorResponse.getDescription();
             } catch (Exception jsonException) {

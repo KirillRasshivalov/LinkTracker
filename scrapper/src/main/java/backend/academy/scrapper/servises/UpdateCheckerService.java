@@ -14,9 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * Сервис для проверки ссылок на обновления, и последующей отправки их юзерам.
- */
+/** Сервис для проверки ссылок на обновления, и последующей отправки их юзерам. */
 @Service
 public class UpdateCheckerService {
 
@@ -24,7 +22,6 @@ public class UpdateCheckerService {
     private final Map<String, List<Long>> LINKS = Collection.linksOwners;
     private final GitHubService GIT_HUB_SERVICE;
     private final StackOverflowService STACKOVERFLOW_SERVICE;
-
 
     public UpdateCheckerService(GitHubService gitHubService, StackOverflowService stackOverflowService) {
         this.GIT_HUB_SERVICE = gitHubService;
@@ -44,23 +41,21 @@ public class UpdateCheckerService {
         for (Map.Entry<String, List<Long>> entry : LINKS.entrySet()) {
             String link = entry.getKey();
             if (isGitHubLink(link)) {
-                GIT_HUB_SERVICE.getLastCommitDate(link)
-                    .subscribe(lastCommitDate -> {
-                        Instant lastUpdated = TRACKED_LINKS.get(link);
-                        if (lastUpdated == null || lastCommitDate.isAfter(lastUpdated)) {
-                            TRACKED_LINKS.put(link, lastCommitDate);
-                            notifyUser(link);
-                        }
-                    });
+                GIT_HUB_SERVICE.getLastCommitDate(link).subscribe(lastCommitDate -> {
+                    Instant lastUpdated = TRACKED_LINKS.get(link);
+                    if (lastUpdated == null || lastCommitDate.isAfter(lastUpdated)) {
+                        TRACKED_LINKS.put(link, lastCommitDate);
+                        notifyUser(link);
+                    }
+                });
             } else if (isStackOverflowLink(link)) {
-                STACKOVERFLOW_SERVICE.getLastActivityDate(link)
-                    .subscribe(lastActivityDate -> {
-                        Instant lastUpdated = TRACKED_LINKS.get(link);
-                        if (lastUpdated == null || lastActivityDate.isAfter(lastUpdated)) {
-                            TRACKED_LINKS.put(link, lastActivityDate);
-                            notifyUser(link);
-                        }
-                    });
+                STACKOVERFLOW_SERVICE.getLastActivityDate(link).subscribe(lastActivityDate -> {
+                    Instant lastUpdated = TRACKED_LINKS.get(link);
+                    if (lastUpdated == null || lastActivityDate.isAfter(lastUpdated)) {
+                        TRACKED_LINKS.put(link, lastActivityDate);
+                        notifyUser(link);
+                    }
+                });
             }
         }
     }
@@ -82,11 +77,6 @@ public class UpdateCheckerService {
         String botUrl = "http://localhost:8080/updates";
         HttpEntity<LinkUpdateRequestDTO> httpEntity = new HttpEntity<>(linkUpdateRequestDTO);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-            botUrl,
-            HttpMethod.POST,
-            httpEntity,
-            String.class
-        );
+        ResponseEntity<String> response = restTemplate.exchange(botUrl, HttpMethod.POST, httpEntity, String.class);
     }
 }

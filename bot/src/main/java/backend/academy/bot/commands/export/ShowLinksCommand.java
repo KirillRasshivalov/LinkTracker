@@ -1,5 +1,7 @@
 package backend.academy.bot.commands.export;
 
+import static backend.academy.bot.LoggComponent.loggFactory;
+
 import backend.academy.bot.managers.links.LinksDataParser;
 import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.ShowListResponseDTO;
@@ -11,13 +13,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import static backend.academy.bot.LoggComponent.loggFactory;
 
-
-/**
- * Класс для показа всех ссылок которые принадлежат данному пользователю.
- */
-public class ShowLinksCommand implements ServerCommands{
+/** Класс для показа всех ссылок которые принадлежат данному пользователю. */
+public class ShowLinksCommand implements ServerCommands {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -34,15 +32,12 @@ public class ShowLinksCommand implements ServerCommands{
         HttpEntity<?> requestEntity = new HttpEntity<>(null, headers);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                serverUrl,
-                HttpMethod.GET,
-                requestEntity,
-                String.class
-            );
+            ResponseEntity<String> response =
+                    restTemplate.exchange(serverUrl, HttpMethod.GET, requestEntity, String.class);
             loggFactory.addBotLog("Ответ от сервера: " + response.getStatusCode() + " - " + response.getBody());
             if (response.getStatusCode().is2xxSuccessful()) {
-                ShowListResponseDTO showListResponseDTO = objectMapper.readValue(response.getBody(), ShowListResponseDTO.class);
+                ShowListResponseDTO showListResponseDTO =
+                        objectMapper.readValue(response.getBody(), ShowListResponseDTO.class);
                 return LinksDataParser.parseInfo(showListResponseDTO);
             } else {
                 return "Ошибка: " + response.getStatusCode();
@@ -50,7 +45,8 @@ public class ShowLinksCommand implements ServerCommands{
         } catch (HttpClientErrorException e) {
             loggFactory.addBotLog("Ошибка 400: " + e.getResponseBodyAsString());
             try {
-                BadResponseDTO errorResponse = objectMapper.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
+                BadResponseDTO errorResponse =
+                        objectMapper.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
                 return errorResponse.getDescription();
             } catch (Exception jsonException) {
                 loggFactory.addBotLog("Ошибка при разборе JSON ответа: " + jsonException.getMessage());

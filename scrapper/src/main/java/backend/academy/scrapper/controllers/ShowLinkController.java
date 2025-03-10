@@ -1,5 +1,7 @@
 package backend.academy.scrapper.controllers;
 
+import static backend.academy.scrapper.components.LogComponent.loggFactory;
+
 import backend.academy.dto.LinkInfoDTO;
 import backend.academy.dto.ShowListResponseDTO;
 import backend.academy.scrapper.data.LinkData;
@@ -11,11 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import static backend.academy.scrapper.components.LogComponent.loggFactory;
 
-/**
- * Контроллер для вывода всех отслеживаемых ссылок данным пользователем.
- */
+/** Контроллер для вывода всех отслеживаемых ссылок данным пользователем. */
 @RestController
 public class ShowLinkController {
 
@@ -30,12 +29,7 @@ public class ShowLinkController {
             List<LinkData> linkInfoDTOS = Collection.idInfo.get(id);
             List<LinkInfoDTO> linkInfoDTOList = new ArrayList<>();
             for (LinkData linkData : linkInfoDTOS) {
-                linkInfoDTOList.add(new LinkInfoDTO(
-                    id,
-                    linkData.link(),
-                    linkData.tags(),
-                    linkData.filter())
-                );
+                linkInfoDTOList.add(new LinkInfoDTO(id, linkData.link(), linkData.tags(), linkData.filter()));
             }
             showListResponseDTO.setLinks(linkInfoDTOList);
             showListResponseDTO.setSize((long) linkInfoDTOList.size());

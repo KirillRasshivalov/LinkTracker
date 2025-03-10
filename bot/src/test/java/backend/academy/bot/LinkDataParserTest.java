@@ -1,11 +1,12 @@
 package backend.academy.bot;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import backend.academy.bot.managers.links.LinksDataParser;
 import backend.academy.dto.LinkInfoDTO;
 import backend.academy.dto.ShowListResponseDTO;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LinkDataParserTest {
 

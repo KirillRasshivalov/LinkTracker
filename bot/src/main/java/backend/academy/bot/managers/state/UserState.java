@@ -1,8 +1,6 @@
 package backend.academy.bot.managers.state;
 
-/**
- * Енамы состояний запроса.
- */
+/** Енамы состояний запроса. */
 public enum UserState {
     DIALOG,
     WAITING_FOR_LINK,

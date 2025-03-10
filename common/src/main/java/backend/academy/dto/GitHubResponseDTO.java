@@ -1,7 +1,5 @@
 package backend.academy.dto;
 
-import java.time.Instant;
-
 public class GitHubResponseDTO {
 
     private String sha;

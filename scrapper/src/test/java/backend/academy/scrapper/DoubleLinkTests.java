@@ -1,5 +1,9 @@
 package backend.academy.scrapper;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import backend.academy.dto.AddLinkRequestDTO;
 import backend.academy.dto.AddLinkResponseDTO;
 import backend.academy.scrapper.data.LinkData;
@@ -15,9 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -52,11 +53,12 @@ public class DoubleLinkTests {
         requestDTO.setFilters(filters);
 
         mockMvc.perform(post("/links")
-                .header("tg-chat-id", chatId.toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.description").value(ErrorHandler.sameLinkError().getDescription()));
+                        .header("tg-chat-id", chatId.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.description")
+                        .value(ErrorHandler.sameLinkError().getDescription()));
     }
 
     @Test
@@ -78,9 +80,9 @@ public class DoubleLinkTests {
         requestDTO.setFilters(filters);
 
         mockMvc.perform(post("/links")
-                .header("tg-chat-id", chatId.toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
-            .andExpect(status().isOk());
+                        .header("tg-chat-id", chatId.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isOk());
     }
 }

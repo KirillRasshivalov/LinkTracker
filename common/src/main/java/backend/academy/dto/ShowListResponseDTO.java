@@ -6,7 +6,6 @@ public class ShowListResponseDTO {
     public List<LinkInfoDTO> links;
     public Long size;
 
-
     public Long getSize() {
         return size;
     }

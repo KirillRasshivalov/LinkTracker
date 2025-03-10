@@ -14,9 +14,7 @@ import backend.academy.bot.commands.local.UntrackCommand;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Класс для получения реализации конкретной команды бота.
- */
+/** Класс для получения реализации конкретной команды бота. */
 public class CommandFactory {
     private static Map<String, BotCommands> botCommands = new HashMap<>();
 

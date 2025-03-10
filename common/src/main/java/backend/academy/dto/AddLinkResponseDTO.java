@@ -1,6 +1,5 @@
 package backend.academy.dto;
 
-
 import java.util.List;
 
 public class AddLinkResponseDTO {
@@ -15,12 +14,11 @@ public class AddLinkResponseDTO {
 
     @Override
     public String toString() {
-        return "AddLinkResponseDTO{" +
-            "id='" + id + '\'' +
-            ", url='" + url + '\'' +
-            ", tags=" + tags +
-            ", filters=" + filters +
-            '}';
+        return "AddLinkResponseDTO{" + "id='"
+                + id + '\'' + ", url='"
+                + url + '\'' + ", tags="
+                + tags + ", filters="
+                + filters + '}';
     }
 
     public void setUrl(String url) {
@@ -51,4 +49,3 @@ public class AddLinkResponseDTO {
         return filters;
     }
 }
-

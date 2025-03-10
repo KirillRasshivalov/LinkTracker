@@ -1,5 +1,8 @@
 package backend.academy.scrapper;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import backend.academy.dto.AddLinkRequestDTO;
 import backend.academy.dto.DeleteLinkRequestDTO;
 import backend.academy.scrapper.data.LinkData;
@@ -14,8 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -50,9 +51,9 @@ public class BadRequestBodyTest {
         requestDTO.setFilters(filters);
 
         mockMvc.perform(post("/links")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
-            .andExpect(status().isBadRequest());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -69,12 +70,11 @@ public class BadRequestBodyTest {
         DeleteLinkRequestDTO requestDTO = new DeleteLinkRequestDTO();
         requestDTO.setLink(link);
 
-
         mockMvc.perform(post("/links")
-                .header("th-chat-id", chatId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
-            .andExpect(status().isBadRequest());
+                        .header("th-chat-id", chatId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -90,9 +90,9 @@ public class BadRequestBodyTest {
         requestDTO.setFilters(filters);
 
         mockMvc.perform(post("/links")
-                .header("tg-chat-id", chatId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
-            .andExpect(status().isOk());
+                        .header("tg-chat-id", chatId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isOk());
     }
 }

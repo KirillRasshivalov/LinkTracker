@@ -1,17 +1,15 @@
 package backend.academy.bot.commands.export;
 
+import static backend.academy.bot.LoggComponent.loggFactory;
+
 import backend.academy.dto.BadResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import static backend.academy.bot.LoggComponent.loggFactory;
 
-
-/**
- * Класс для регистрации пользователя на сервере и добавление его в активные пользователи.
- */
+/** Класс для регистрации пользователя на сервере и добавление его в активные пользователи. */
 public class RegisterUserCommand implements ServerCommands {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -26,12 +24,7 @@ public class RegisterUserCommand implements ServerCommands {
         RestTemplate restTemplate = new RestTemplate();
 
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(
-                serverUrl,
-                null,
-                String.class,
-                id
-            );
+            ResponseEntity<String> response = restTemplate.postForEntity(serverUrl, null, String.class, id);
             loggFactory.addBotLog("Ответ от сервера: " + response.getStatusCode() + " - " + response.getBody());
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "Чат зарегистрирован.";
@@ -41,10 +34,8 @@ public class RegisterUserCommand implements ServerCommands {
         } catch (HttpClientErrorException e) {
             loggFactory.addBotLog("Ошибка 400: " + e.getResponseBodyAsString());
             try {
-                BadResponseDTO errorResponse = objectMapper.readValue(
-                    e.getResponseBodyAsString(),
-                    BadResponseDTO.class
-                );
+                BadResponseDTO errorResponse =
+                        objectMapper.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
 
                 return errorResponse.getDescription();
             } catch (Exception jsonException) {
@@ -58,5 +49,4 @@ public class RegisterUserCommand implements ServerCommands {
             return "Что-то пошло не так.";
         }
     }
-
 }

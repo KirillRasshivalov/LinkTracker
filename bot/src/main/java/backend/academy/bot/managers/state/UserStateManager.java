@@ -3,9 +3,7 @@ package backend.academy.bot.managers.state;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Класс для поддержания состояния текущего пользователя.
- */
+/** Класс для поддержания состояния текущего пользователя. */
 public class UserStateManager {
 
     private final Map<Long, UserState> userStates = new HashMap<>();

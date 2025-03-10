@@ -5,9 +5,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-/**
- * Класс для сохранения логов в один файл.
- */
+/** Класс для сохранения логов в один файл. */
 public class LoggFactory {
 
     private static Logger botLogger = Logger.getLogger(LoggFactory.class.getName());

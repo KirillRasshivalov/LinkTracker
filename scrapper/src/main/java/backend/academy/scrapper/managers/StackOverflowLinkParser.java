@@ -1,8 +1,6 @@
 package backend.academy.scrapper.managers;
 
-/**
- * Класс для парсинга ссылок на стековерфлоу.
- */
+/** Класс для парсинга ссылок на стековерфлоу. */
 public class StackOverflowLinkParser {
     public static String parseQuestionId(String url) {
         String[] parts = url.split("/");

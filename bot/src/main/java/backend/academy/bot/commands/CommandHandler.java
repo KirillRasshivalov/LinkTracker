@@ -6,25 +6,18 @@ import com.pengrad.telegrambot.model.Update;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Класс для хранения информации о командах и всей логикой связанной с ними.
- */
+/** Класс для хранения информации о командах и всей логикой связанной с ними. */
 public class CommandHandler {
 
     public static final Map<String, String> COMMANDS = Map.of(
-        "/start", "регистрация пользователя.",
-        "/help", "вывод списка доступных команд.",
-        "/track", "начать отслеживание ссылки.",
-        "/untrack", "прекратить отслеживание ссылки.",
-        "/list", "показать список отслеживаемых ссылок."
-    );
+            "/start", "регистрация пользователя.",
+            "/help", "вывод списка доступных команд.",
+            "/track", "начать отслеживание ссылки.",
+            "/untrack", "прекратить отслеживание ссылки.",
+            "/list", "показать список отслеживаемых ссылок.");
 
-    private static final List<String> COMMANDS_TO_SERVER = List.of(
-        "/add_link",
-        "/register_user",
-        "/show_links",
-        "/delete_link"
-    );
+    private static final List<String> COMMANDS_TO_SERVER =
+            List.of("/add_link", "/register_user", "/show_links", "/delete_link");
 
     public static String getListOfCommands() {
         StringBuilder listOfCommands = new StringBuilder();

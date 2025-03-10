@@ -1,5 +1,7 @@
 package backend.academy.scrapper.controllers;
 
+import static backend.academy.scrapper.components.LogComponent.loggFactory;
+
 import backend.academy.dto.DeleteLinkRequestDTO;
 import backend.academy.dto.DeleteLinkResponceDTO;
 import backend.academy.scrapper.data.LinkData;
@@ -12,19 +14,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import static backend.academy.scrapper.components.LogComponent.loggFactory;
 
-/**
- * Контроллер на удаление ссылок.
- */
+/** Контроллер на удаление ссылок. */
 @RestController
 public class DeleteLinkController {
 
     @DeleteMapping("/links")
     public ResponseEntity<?> deleteLink(
-        @RequestBody DeleteLinkRequestDTO link,
-        @RequestHeader("tg-chat-id") String chatId
-    ) {
+            @RequestBody DeleteLinkRequestDTO link, @RequestHeader("tg-chat-id") String chatId) {
         loggFactory.addServerLog("Пришел запрос на удаление ссылки " + chatId);
 
         Long id = Long.valueOf(chatId);
