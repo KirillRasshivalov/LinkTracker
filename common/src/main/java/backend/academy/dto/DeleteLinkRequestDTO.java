@@ -1,7 +1,7 @@
 package backend.academy.dto;
 
 public class DeleteLinkRequestDTO {
-    public String link;
+    String link;
 
     public void setLink(String link) {
         this.link = link;

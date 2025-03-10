@@ -10,19 +10,6 @@
 
     <artifactId>report</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>backend.academy</groupId>
-            <artifactId>bot</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>backend.academy</groupId>
-            <artifactId>scrapper</artifactId>
-            <version>${revision}</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>

@@ -17,6 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /** Класс для отправки новой отслеживаемой ссылки на скрепер и ожидающий ответа от него. */
+@SuppressWarnings("StringSplitter")
 public class AddLinkCommand implements ServerCommands {
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

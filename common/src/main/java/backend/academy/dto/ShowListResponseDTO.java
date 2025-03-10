@@ -1,10 +1,12 @@
 package backend.academy.dto;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.List;
 
+@SuppressFBWarnings("PA_PUBLIC_PRIMITIVE_ATTRIBUTE")
 public class ShowListResponseDTO {
     public List<LinkInfoDTO> links;
-    public Long size;
+    Long size;
 
     public Long getSize() {
         return size;

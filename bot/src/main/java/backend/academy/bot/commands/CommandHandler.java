@@ -3,10 +3,12 @@ package backend.academy.bot.commands;
 import backend.academy.bot.commands.export.ServerCommands;
 import backend.academy.bot.commands.local.BotCommands;
 import com.pengrad.telegrambot.model.Update;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.List;
 import java.util.Map;
 
 /** Класс для хранения информации о командах и всей логикой связанной с ними. */
+@SuppressFBWarnings("WMI_WRONG_MAP_ITERATOR")
 public class CommandHandler {
 
     public static final Map<String, String> COMMANDS = Map.of(

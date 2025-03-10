@@ -3,9 +3,9 @@ package backend.academy.dto;
 import java.util.List;
 
 public class LinkUpdateRequestDTO {
-    public Long id;
-    public String url;
-    public String description;
+    Long id;
+    String url;
+    String description;
     List<Long> tgChatIds;
 
     public Long getId() {

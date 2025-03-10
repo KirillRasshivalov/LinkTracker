@@ -24,7 +24,7 @@ public class AddLinkController {
 
         loggFactory.addServerLog("Пришел запрос на добавление ссылки от " + chatId);
 
-        LinkData linkData = new LinkData(requestDTO.link, requestDTO.filters, requestDTO.tags);
+        LinkData linkData = new LinkData(requestDTO.getLink(), requestDTO.getFilters(), requestDTO.getTags());
         Long id = Long.valueOf(chatId);
         Collection.activeUsers.add(id);
 
@@ -35,11 +35,11 @@ public class AddLinkController {
                 Collection.idInfo.put(Long.valueOf(chatId), new ArrayList<>());
                 Collection.idInfo.get(Long.valueOf(chatId)).add(linkData);
             }
-            if (Collection.linksOwners.containsKey(requestDTO.link)) {
-                Collection.linksOwners.get(requestDTO.link).add(id);
+            if (Collection.linksOwners.containsKey(requestDTO.getLink())) {
+                Collection.linksOwners.get(requestDTO.getLink()).add(id);
             } else {
-                Collection.linksOwners.put(requestDTO.link, new ArrayList<>());
-                Collection.linksOwners.get(requestDTO.link).add(id);
+                Collection.linksOwners.put(requestDTO.getLink(), new ArrayList<>());
+                Collection.linksOwners.get(requestDTO.getLink()).add(id);
             }
             AddLinkResponseDTO responseDTO = new AddLinkResponseDTO();
             responseDTO.setId(chatId);

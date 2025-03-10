@@ -1,5 +1,7 @@
 package backend.academy.scrapper.servises;
 
+import static backend.academy.scrapper.components.LogComponent.loggFactory;
+
 import backend.academy.dto.LinkUpdateRequestDTO;
 import backend.academy.scrapper.managers.Collection;
 import java.time.Instant;
@@ -78,5 +80,6 @@ public class UpdateCheckerService {
         HttpEntity<LinkUpdateRequestDTO> httpEntity = new HttpEntity<>(linkUpdateRequestDTO);
 
         ResponseEntity<String> response = restTemplate.exchange(botUrl, HttpMethod.POST, httpEntity, String.class);
+        loggFactory.addServerLog("Получен ответ:" + response.getBody());
     }
 }

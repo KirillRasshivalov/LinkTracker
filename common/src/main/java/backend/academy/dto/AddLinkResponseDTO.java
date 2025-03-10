@@ -3,10 +3,10 @@ package backend.academy.dto;
 import java.util.List;
 
 public class AddLinkResponseDTO {
-    public String id;
-    public String url;
-    public List<String> tags;
-    public List<String> filters;
+    String id;
+    String url;
+    List<String> tags;
+    List<String> filters;
 
     public void setId(String id) {
         this.id = id;
