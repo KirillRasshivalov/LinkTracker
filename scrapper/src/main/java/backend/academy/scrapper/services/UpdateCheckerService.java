@@ -38,26 +38,44 @@ public class UpdateCheckerService {
         return link.startsWith("https://stackoverflow.com/");
     }
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 10000)
     public void checkForUpdates() {
         for (Map.Entry<String, List<Long>> entry : LINKS.entrySet()) {
             String link = entry.getKey();
             if (isGitHubLink(link)) {
-                GIT_HUB_SERVICE.getLastCommitDate(link).subscribe(lastCommitDate -> {
-                    Instant lastUpdated = TRACKED_LINKS.get(link);
-                    if (lastUpdated == null || lastCommitDate.isAfter(lastUpdated)) {
-                        TRACKED_LINKS.put(link, lastCommitDate);
-                        notifyUser(link);
-                    }
-                });
+                loggFactory.addServerLog("Проверяем наличие обновлений по ссылки с гитхаба.");
+                GIT_HUB_SERVICE
+                        .getLastCommitDate(link)
+                        .subscribe(
+                                lastCommitDate -> {
+                                    Instant lastUpdated = null;
+                                    if (TRACKED_LINKS.containsKey(link)) {
+                                        lastUpdated = TRACKED_LINKS.get(link);
+                                    }
+                                    if (lastUpdated == null || lastCommitDate.isAfter(lastUpdated)) {
+                                        TRACKED_LINKS.put(link, lastCommitDate);
+                                        notifyUser(link);
+                                    }
+                                },
+                                error -> loggFactory.addServerLog("Ошибка при проверке обновлений для ссылки: " + link
+                                        + ", ошибка: " + error.getMessage()));
             } else if (isStackOverflowLink(link)) {
-                STACKOVERFLOW_SERVICE.getLastActivityDate(link).subscribe(lastActivityDate -> {
-                    Instant lastUpdated = TRACKED_LINKS.get(link);
-                    if (lastUpdated == null || lastActivityDate.isAfter(lastUpdated)) {
-                        TRACKED_LINKS.put(link, lastActivityDate);
-                        notifyUser(link);
-                    }
-                });
+                loggFactory.addServerLog("Проверяем наличие обновлений по ссылке с стековерфлоу.");
+                STACKOVERFLOW_SERVICE
+                        .getLastActivityDate(link)
+                        .subscribe(
+                                lastActivityDate -> {
+                                    Instant lastUpdated = null;
+                                    if (TRACKED_LINKS.containsKey(link)) {
+                                        lastUpdated = TRACKED_LINKS.get(link);
+                                    }
+                                    if (lastUpdated == null || lastActivityDate.isAfter(lastUpdated)) {
+                                        TRACKED_LINKS.put(link, lastActivityDate);
+                                        notifyUser(link);
+                                    }
+                                },
+                                error -> loggFactory.addServerLog("Ошибка при проверке обновлений для ссылки: " + link
+                                        + ", ошибка: " + error.getMessage()));
             }
         }
     }
