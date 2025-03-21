@@ -45,12 +45,12 @@ public class ShowLinksCommand implements ServerCommands {
                         objectMapper.readValue(response.getBody(), ShowListResponseDTO.class);
                 return LinksDataParser.parseInfo(showListResponseDTO);
             } else {
-                return "Ошибка: " + response.getStatusCode();
+                return "Ошибка при показе доступных команд: " + response.getStatusCode();
             }
         } catch (HttpClientErrorException e) {
             BotLogger.LOGGER
                     .atError()
-                    .setMessage("Ошибка 400: " + e.getResponseBodyAsString())
+                    .setMessage("Ошибка 400 при показе команд: " + e.getResponseBodyAsString())
                     .log();
             try {
                 BadResponseDTO errorResponse =

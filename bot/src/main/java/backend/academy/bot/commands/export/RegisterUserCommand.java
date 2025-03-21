@@ -34,12 +34,12 @@ public class RegisterUserCommand implements ServerCommands {
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "Чат зарегистрирован.";
             } else {
-                return "Ошибка: " + response.getStatusCode();
+                return "Ошибка при регистрации пользователя: " + response.getStatusCode();
             }
         } catch (HttpClientErrorException e) {
             BotLogger.LOGGER
                     .atError()
-                    .setMessage("Ошибка 400: " + e.getResponseBodyAsString())
+                    .setMessage("Ошибка 400 при регистрации пользователя: " + e.getResponseBodyAsString())
                     .log();
             try {
                 BadResponseDTO errorResponse =

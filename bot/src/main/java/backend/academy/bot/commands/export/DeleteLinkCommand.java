@@ -40,12 +40,12 @@ public class DeleteLinkCommand implements ServerCommands {
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "Ссылка успешно удалена.";
             } else {
-                return "Ошибка: " + response.getStatusCode();
+                return "Ошибка при удаление ссылки: " + response.getStatusCode();
             }
         } catch (HttpClientErrorException e) {
             BotLogger.LOGGER
                     .atError()
-                    .setMessage("Ошибка 400: " + e.getResponseBodyAsString())
+                    .setMessage("Ошибка 400 при удаление ссылки: " + e.getResponseBodyAsString())
                     .log();
             try {
                 BadResponseDTO errorResponse =
