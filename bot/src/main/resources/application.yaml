@@ -19,4 +19,9 @@ springdoc:
     enabled: true
     path: /swagger-ui
 
+logging:
+  structured:
+    format:
+      console=ecs:
+
 

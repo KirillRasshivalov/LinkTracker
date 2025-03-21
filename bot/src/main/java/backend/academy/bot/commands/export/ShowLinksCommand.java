@@ -1,8 +1,7 @@
 package backend.academy.bot.commands.export;
 
-import static backend.academy.bot.LoggComponent.loggFactory;
-
 import backend.academy.bot.managers.links.LinksDataParser;
+import backend.academy.bot.services.BotLogger;
 import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.ShowListResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +21,10 @@ public class ShowLinksCommand implements ServerCommands {
     @Override
     public String applyCommand(String message, Update update) {
 
-        loggFactory.addBotLog("Команда на показ всех доступнух пользователю ссылок " + message);
+        BotLogger.LOGGER
+                .atInfo()
+                .addArgument("Команда на показ всех доступнух пользователю ссылок " + message)
+                .log();
 
         String serverUrl = "http://localhost:8081/links";
 
@@ -34,7 +36,10 @@ public class ShowLinksCommand implements ServerCommands {
         try {
             ResponseEntity<String> response =
                     restTemplate.exchange(serverUrl, HttpMethod.GET, requestEntity, String.class);
-            loggFactory.addBotLog("Ответ от сервера: " + response.getStatusCode() + " - " + response.getBody());
+            BotLogger.LOGGER
+                    .atInfo()
+                    .setMessage("Ответ от сервера: " + response.getStatusCode() + " - " + response.getBody())
+                    .log();
             if (response.getStatusCode().is2xxSuccessful()) {
                 ShowListResponseDTO showListResponseDTO =
                         objectMapper.readValue(response.getBody(), ShowListResponseDTO.class);
@@ -43,17 +48,23 @@ public class ShowLinksCommand implements ServerCommands {
                 return "Ошибка: " + response.getStatusCode();
             }
         } catch (HttpClientErrorException e) {
-            loggFactory.addBotLog("Ошибка 400: " + e.getResponseBodyAsString());
+            BotLogger.LOGGER
+                    .atError()
+                    .setMessage("Ошибка 400: " + e.getResponseBodyAsString())
+                    .log();
             try {
                 BadResponseDTO errorResponse =
                         objectMapper.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
                 return errorResponse.getDescription();
             } catch (Exception jsonException) {
-                loggFactory.addBotLog("Ошибка при разборе JSON ответа: " + jsonException.getMessage());
+                BotLogger.LOGGER
+                        .atError()
+                        .setMessage("Ошибка при разборе JSON ответа: " + jsonException.getMessage())
+                        .log();
                 return "Ошибка 400, но не удалось разобрать ответ.";
             }
         } catch (Exception e) {
-            loggFactory.addBotLog("Неизвестная ошибка: " + e);
+            BotLogger.LOGGER.atError().setMessage("Неизвестная ошибка: " + e).log();
             return "Что-то пошло не так.";
         }
     }

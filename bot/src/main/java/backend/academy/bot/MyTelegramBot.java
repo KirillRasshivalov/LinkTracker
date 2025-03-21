@@ -1,13 +1,12 @@
 package backend.academy.bot;
 
-import static backend.academy.bot.LoggComponent.loggFactory;
-
 import backend.academy.bot.commands.CommandHandler;
 import backend.academy.bot.commands.ListBotCommands;
 import backend.academy.bot.managers.data.UserData;
 import backend.academy.bot.managers.data.UserDataManager;
 import backend.academy.bot.managers.state.UserState;
 import backend.academy.bot.managers.state.UserStateManager;
+import backend.academy.bot.services.BotLogger;
 import backend.academy.bot.services.UrlValidator;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
@@ -45,7 +44,7 @@ public class MyTelegramBot {
 
     @PostConstruct
     public void init() throws IOException {
-        loggFactory.addBotLog("Зупускаем телеграм бот.");
+        BotLogger.LOGGER.atInfo().setMessage("Зупускаем телеграм бот.").log();
         bot = new TelegramBot(CONFIG.telegramToken());
 
         BotCommand[] commands = ListBotCommands.getCommandsArray();
@@ -73,7 +72,10 @@ public class MyTelegramBot {
             String messageText = update.message().text();
             long chatId = update.message().chat().id();
             UserData userData = USER_DATA_MANAGER.getUserData(chatId);
-            loggFactory.addBotLog("Получено " + messageText + " от " + chatId);
+            BotLogger.LOGGER
+                    .atInfo()
+                    .setMessage("Получено " + messageText + " от " + chatId)
+                    .log();
             chatsIds.add(String.valueOf(chatId));
 
             UserState currentState = USER_STATE_MANAGER.getUserState(chatId);
