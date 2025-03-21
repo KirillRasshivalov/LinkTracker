@@ -57,12 +57,12 @@ public class AddLinkCommand implements ServerCommands {
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "Ссылка успешно добавлена.";
             } else {
-                return "Ошибка: " + response.getStatusCode();
+                return "Ошибка в добавление ссылки: " + response.getStatusCode();
             }
         } catch (HttpClientErrorException e) {
             BotLogger.LOGGER
                     .atError()
-                    .setMessage("Ошибка 400: " + e.getResponseBodyAsString())
+                    .setMessage("Ошибка 400 при добавлении ссылки: " + e.getResponseBodyAsString())
                     .log();
             try {
                 BadResponseDTO errorResponse =

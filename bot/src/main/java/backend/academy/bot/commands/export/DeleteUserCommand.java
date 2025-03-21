@@ -36,12 +36,12 @@ public class DeleteUserCommand implements ServerCommands {
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "Чат успешно удален.";
             } else {
-                return "Ошибка: " + response.getStatusCode();
+                return "Ошибка при удаление пользователя: " + response.getStatusCode();
             }
         } catch (HttpClientErrorException e) {
             BotLogger.LOGGER
                     .atError()
-                    .setMessage("Ошибка 400: " + e.getResponseBodyAsString())
+                    .setMessage("Ошибка 400 при удаление пользователя: " + e.getResponseBodyAsString())
                     .log();
             try {
                 BadResponseDTO errorResponse =

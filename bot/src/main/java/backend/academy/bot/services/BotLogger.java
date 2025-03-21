@@ -1,14 +1,16 @@
 package backend.academy.bot.services;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
+@SuppressFBWarnings("SLF4J_LOGGER_SHOULD_BE_PRIVATE")
 public class BotLogger implements CommandLineRunner {
 
-    public static Logger LOGGER = LoggerFactory.getLogger(BotLogger.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(BotLogger.class);
 
     @Override
     public void run(String... args) throws Exception {
