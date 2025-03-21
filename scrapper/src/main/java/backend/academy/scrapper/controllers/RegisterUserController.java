@@ -1,9 +1,8 @@
 package backend.academy.scrapper.controllers;
 
-import static backend.academy.scrapper.components.LogComponent.loggFactory;
-
 import backend.academy.scrapper.managers.Collection;
 import backend.academy.scrapper.managers.ErrorHandler;
+import backend.academy.scrapper.services.ServerLogger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +16,10 @@ public class RegisterUserController {
 
     @PostMapping("/{id}")
     public ResponseEntity<?> addActiveUser(@PathVariable String id) {
-        loggFactory.addServerLog("Пришел запрос на регистрацию пользователя " + id);
+        ServerLogger.LOGGER
+                .atInfo()
+                .setMessage("Пришел запрос на регистрацию пользователя " + id)
+                .log();
 
         if (Collection.activeUsers.contains(Long.valueOf(id))) {
             return ResponseEntity.badRequest().body(ErrorHandler.chatHasAlreadyExist());

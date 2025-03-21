@@ -1,12 +1,11 @@
 package backend.academy.scrapper.controllers;
 
-import static backend.academy.scrapper.components.LogComponent.loggFactory;
-
 import backend.academy.dto.AddLinkRequestDTO;
 import backend.academy.dto.AddLinkResponseDTO;
 import backend.academy.scrapper.data.LinkData;
 import backend.academy.scrapper.managers.Collection;
 import backend.academy.scrapper.managers.ErrorHandler;
+import backend.academy.scrapper.services.ServerLogger;
 import java.util.ArrayList;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,10 @@ public class AddLinkController {
     public ResponseEntity<?> updateCollection(
             @RequestBody AddLinkRequestDTO requestDTO, @RequestHeader("tg-chat-id") String chatId) {
 
-        loggFactory.addServerLog("Пришел запрос на добавление ссылки от " + chatId);
+        ServerLogger.LOGGER
+                .atInfo()
+                .setMessage("Пришел запрос на добавление ссылки от " + chatId)
+                .log();
 
         LinkData linkData = new LinkData(requestDTO.getLink(), requestDTO.getFilters(), requestDTO.getTags());
         Long id = Long.valueOf(chatId);

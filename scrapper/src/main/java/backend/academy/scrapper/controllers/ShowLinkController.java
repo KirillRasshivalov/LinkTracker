@@ -1,12 +1,11 @@
 package backend.academy.scrapper.controllers;
 
-import static backend.academy.scrapper.components.LogComponent.loggFactory;
-
 import backend.academy.dto.LinkInfoDTO;
 import backend.academy.dto.ShowListResponseDTO;
 import backend.academy.scrapper.data.LinkData;
 import backend.academy.scrapper.managers.Collection;
 import backend.academy.scrapper.managers.ErrorHandler;
+import backend.academy.scrapper.services.ServerLogger;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,10 @@ public class ShowLinkController {
 
     @GetMapping("/links")
     public ResponseEntity<?> showLink(@RequestHeader("tg-chat-id") String chatId) {
-        loggFactory.addServerLog("Пришел запрос на показ действующий ссылок " + chatId);
+        ServerLogger.LOGGER
+                .atInfo()
+                .setMessage("Пришел запрос на показ действующий ссылок " + chatId)
+                .log();
 
         Long id = Long.parseLong(chatId);
 

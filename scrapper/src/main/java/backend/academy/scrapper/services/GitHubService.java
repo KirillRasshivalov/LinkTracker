@@ -1,4 +1,4 @@
-package backend.academy.scrapper.servises;
+package backend.academy.scrapper.services;
 
 import backend.academy.dto.GitHubResponseDTO;
 import backend.academy.scrapper.ScrapperConfig;
