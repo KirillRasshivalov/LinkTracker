@@ -1,6 +1,4 @@
-package backend.academy.scrapper.servises;
-
-import static backend.academy.scrapper.components.LogComponent.loggFactory;
+package backend.academy.scrapper.services;
 
 import backend.academy.dto.LinkUpdateRequestDTO;
 import backend.academy.scrapper.managers.Collection;
@@ -43,7 +41,10 @@ public class UpdateCheckerService {
         for (Map.Entry<String, List<Long>> entry : LINKS.entrySet()) {
             String link = entry.getKey();
             if (isGitHubLink(link)) {
-                loggFactory.addServerLog("Проверяем наличие обновлений по ссылки с гитхаба.");
+                ServerLogger.LOGGER
+                        .atInfo()
+                        .setMessage("Проверяем наличие обновлений по ссылки с гитхаба.")
+                        .log();
                 GIT_HUB_SERVICE
                         .getLastCommitDate(link)
                         .subscribe(
@@ -57,10 +58,16 @@ public class UpdateCheckerService {
                                         notifyUser(link);
                                     }
                                 },
-                                error -> loggFactory.addServerLog("Ошибка при проверке обновлений для ссылки: " + link
-                                        + ", ошибка: " + error.getMessage()));
+                                error -> ServerLogger.LOGGER
+                                        .atError()
+                                        .setMessage("Ошибка при проверке обновлений для ссылки: " + link + ", ошибка: "
+                                                + error.getMessage())
+                                        .log());
             } else if (isStackOverflowLink(link)) {
-                loggFactory.addServerLog("Проверяем наличие обновлений по ссылке с стековерфлоу.");
+                ServerLogger.LOGGER
+                        .atInfo()
+                        .setMessage("Проверяем наличие обновлений по ссылке с стековерфлоу.")
+                        .log();
                 STACKOVERFLOW_SERVICE
                         .getLastActivityDate(link)
                         .subscribe(
@@ -74,8 +81,11 @@ public class UpdateCheckerService {
                                         notifyUser(link);
                                     }
                                 },
-                                error -> loggFactory.addServerLog("Ошибка при проверке обновлений для ссылки: " + link
-                                        + ", ошибка: " + error.getMessage()));
+                                error -> ServerLogger.LOGGER
+                                        .atError()
+                                        .setMessage("Ошибка при проверке обновлений для ссылки: " + link + ", ошибка: "
+                                                + error.getMessage())
+                                        .log());
             }
         }
     }
@@ -98,6 +108,9 @@ public class UpdateCheckerService {
         HttpEntity<LinkUpdateRequestDTO> httpEntity = new HttpEntity<>(linkUpdateRequestDTO);
 
         ResponseEntity<String> response = restTemplate.exchange(botUrl, HttpMethod.POST, httpEntity, String.class);
-        loggFactory.addServerLog("Получен ответ:" + response.getBody());
+        ServerLogger.LOGGER
+                .atInfo()
+                .setMessage("Получен ответ:" + response.getBody())
+                .log();
     }
 }
