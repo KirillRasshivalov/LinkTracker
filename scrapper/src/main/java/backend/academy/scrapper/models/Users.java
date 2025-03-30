@@ -22,9 +22,9 @@ public class Users {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, name = "used_id")
+    @Column(nullable = false, name = "user_id")
     private Long userId;
 
-    @OneToMany(mappedBy = "accounts", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<LinkInfo> links = new ArrayList<>();
 }
