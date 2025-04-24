@@ -1,8 +1,11 @@
 package backend.academy.scrapper.notifications;
 
+import backend.academy.dto.MainInfoFromGithubDTO;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Интерфейс для общения скрапера и бота.
+ */
 public interface Sender {
-    void sendNotification(String link, Map<String, List<Long>> LINKS);
+    void sendNotification(String link, List<Long> IDS, MainInfoFromGithubDTO info);
 }
