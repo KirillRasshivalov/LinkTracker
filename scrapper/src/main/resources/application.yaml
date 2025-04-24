@@ -9,10 +9,10 @@ spring:
     name: Scrapper
   liquibase:
     enabled: false
-    change-log: db.changelog-master.xml
+    change-log: ../../../../db.changelog-master.xml
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     ## ddl-auto: validate
     open-in-view: false
   datasource:
