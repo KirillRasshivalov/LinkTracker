@@ -11,6 +11,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+/**
+ * Репозиторий для выполнения методов, которые требуют запросы в бд по таблице ссылок.
+ */
 public interface LinkInfoRepository extends JpaRepository<LinkInfo, Long> {
     @Query("SELECT CASE WHEN COUNT(li) > 0 THEN true ELSE false END " + "FROM Users u JOIN u.links li "
             + "WHERE u.userId = :userId")

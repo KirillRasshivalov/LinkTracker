@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+/**
+ * Репозиторий для выполнения методов, которые требуют запросы в бд по таблице юзеров.
+ */
 public interface UsersRepository extends JpaRepository<Users, Long> {
     boolean existsByUserId(Long userId);
 
