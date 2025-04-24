@@ -1,13 +1,11 @@
 package backend.academy.scrapper.services;
 
 import backend.academy.dto.MainInfoFromGithubDTO;
-import backend.academy.scrapper.jpaRepositories.LinkInfoRepository;
-import backend.academy.scrapper.managers.Collection;
 import backend.academy.scrapper.models.LinkInfo;
 import backend.academy.scrapper.notifications.HTTPSender;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,10 +19,9 @@ import org.springframework.stereotype.Service;
 
 /** Сервис для проверки ссылок на обновления, и последующей отправки их юзерам. */
 @Service
+@SuppressFBWarnings("JLM_JSR166_UTILCONCURRENT_MONITORENTER")
 public class UpdateCheckerService {
 
-    private final Map<String, Instant> TRACKED_LINKS = new HashMap<>();
-    private final Map<String, List<Long>> LINKS = Collection.linksOwners;
     private final GitHubService GIT_HUB_SERVICE;
     private final StackOverflowService STACKOVERFLOW_SERVICE;
     private final DatabaseService DATABASE_SERVICE;
@@ -32,17 +29,12 @@ public class UpdateCheckerService {
     private final Map<String, Instant> trackedLinks = new ConcurrentHashMap<>();
 
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
-    private final LinkInfoRepository linkInfoRepository;
 
     public UpdateCheckerService(
-            GitHubService gitHubService,
-            StackOverflowService stackOverflowService,
-            DatabaseService databaseService,
-            LinkInfoRepository linkInfoRepository) {
+            GitHubService gitHubService, StackOverflowService stackOverflowService, DatabaseService databaseService) {
         this.GIT_HUB_SERVICE = gitHubService;
         this.STACKOVERFLOW_SERVICE = stackOverflowService;
         this.DATABASE_SERVICE = databaseService;
-        this.linkInfoRepository = linkInfoRepository;
     }
 
     private boolean isGitHubLink(String link) {
@@ -67,7 +59,7 @@ public class UpdateCheckerService {
             page = DATABASE_SERVICE.showLinks(pageable);
 
             for (LinkInfo linkInfo : page.getContent()) {
-                executor.submit(() -> processLink(linkInfo, httpSender));
+                var unused = executor.submit(() -> processLink(linkInfo, httpSender));
             }
             pageNumber++;
         } while (page.hasNext());

@@ -4,9 +4,7 @@ import backend.academy.scrapper.jpaRepositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/**
- * Сервис для управления таблицы с юзерами в бд.
- */
+/** Сервис для управления таблицы с юзерами в бд. */
 @Service
 @RequiredArgsConstructor
 public class UserService {

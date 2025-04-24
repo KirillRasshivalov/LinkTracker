@@ -1,16 +1,13 @@
 package backend.academy.scrapper.dataSource;
 
+import backend.academy.scrapper.DataBaseConfig;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import backend.academy.scrapper.DataBaseConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-/**
- * Компонент который будет создавать connection с базой данных.
- */
+/** Компонент который будет создавать connection с базой данных. */
 @Component
 @RequiredArgsConstructor
 public class Connecting {

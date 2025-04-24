@@ -8,9 +8,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Класс с методами для выполнения запросов к бд.
- */
+/** Класс с методами для выполнения запросов к бд. */
 @RequiredArgsConstructor
 public class UserJdbcRepository {
     private final Connecting connecting;

@@ -4,9 +4,7 @@ import backend.academy.scrapper.jpaRepositories.LinkInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/**
- * Сервис для управления таблицы с ссылками.
- */
+/** Сервис для управления таблицы с ссылками. */
 @Service
 @RequiredArgsConstructor
 public class LinkService {

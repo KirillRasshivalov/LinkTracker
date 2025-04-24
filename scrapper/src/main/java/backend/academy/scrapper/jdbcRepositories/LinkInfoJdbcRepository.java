@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Класс с методами для выполнения запросов к бд.
- */
+/** Класс с методами для выполнения запросов к бд. */
 @RequiredArgsConstructor
 public class LinkInfoJdbcRepository {
     private final Connecting connecting;
