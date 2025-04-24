@@ -2,12 +2,11 @@ package backend.academy.scrapper.controllers;
 
 import backend.academy.dto.DeleteLinkRequestDTO;
 import backend.academy.dto.DeleteLinkResponceDTO;
-import backend.academy.scrapper.data.LinkData;
-import backend.academy.scrapper.managers.Collection;
 import backend.academy.scrapper.managers.ErrorHandler;
+import backend.academy.scrapper.services.DatabaseService;
+import backend.academy.scrapper.services.LinkService;
 import backend.academy.scrapper.services.ServerLogger;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 /** Контроллер на удаление ссылок. */
 @RestController
+@RequiredArgsConstructor
 public class DeleteLinkController {
+
+    private final DatabaseService databaseService;
+    private final LinkService linkService;
 
     @DeleteMapping("/links")
     public ResponseEntity<?> deleteLink(
@@ -28,34 +31,14 @@ public class DeleteLinkController {
 
         Long id = Long.valueOf(chatId);
 
-        if (Collection.idInfo.containsKey(id)) {
-            List<LinkData> listToRemove = new ArrayList<>();
-            List<LinkData> currUserList = Collection.idInfo.get(id);
-
-            for (LinkData linkData : currUserList) {
-                System.out.println(linkData.link() + " " + link.getLink());
-                if (linkData.link().equals(link.getLink())) {
-                    listToRemove.add(linkData);
-                    Collection.linksOwners.get(link.getLink()).remove(id);
-                }
-            }
-
-            if (listToRemove.isEmpty()) {
-                return ResponseEntity.badRequest().body(ErrorHandler.linkDoesntExist());
-            }
-
-            for (LinkData linkData : listToRemove) {
-                Collection.idInfo.get(id).remove(linkData);
-                if (Collection.idInfo.get(id).isEmpty()) Collection.idInfo.remove(id);
-            }
-
+        if (linkService.findLink(link.getLink(), id)) {
+            databaseService.deleteLink(id, link.getLink());
             DeleteLinkResponceDTO deleteLinkResponceDTO = new DeleteLinkResponceDTO();
             deleteLinkResponceDTO.setId(id);
             deleteLinkResponceDTO.setUrl(link.getLink());
 
             return ResponseEntity.ok().body(deleteLinkResponceDTO);
-        } else {
-            return ResponseEntity.badRequest().body(ErrorHandler.linkDoesntExist());
         }
+        return ResponseEntity.badRequest().body(ErrorHandler.linkDoesntExist());
     }
 }
