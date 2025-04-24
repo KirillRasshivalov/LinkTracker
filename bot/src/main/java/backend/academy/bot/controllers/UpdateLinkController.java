@@ -2,6 +2,7 @@ package backend.academy.bot.controllers;
 
 import static backend.academy.bot.MyTelegramBot.notificationMessage;
 
+import backend.academy.bot.services.BotLogger;
 import backend.academy.dto.LinkUpdateRequestDTO;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,14 @@ public class UpdateLinkController {
     public ResponseEntity<?> notifyUser(@RequestBody LinkUpdateRequestDTO linkUpdateRequestDTO) {
         try {
             notificationMessage(linkUpdateRequestDTO.getTgChatIds(), linkUpdateRequestDTO.getDescription());
+            BotLogger.LOGGER
+                    .atInfo()
+                    .setMessage(linkUpdateRequestDTO.getDescription())
+                    .log();
 
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            e.printStackTrace();
+            BotLogger.LOGGER.atInfo().setMessage(e.getMessage()).log();
 
             return ResponseEntity.badRequest().build();
         }

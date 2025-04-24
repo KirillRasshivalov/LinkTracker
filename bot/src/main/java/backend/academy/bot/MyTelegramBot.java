@@ -62,6 +62,7 @@ public class MyTelegramBot {
 
     public static void notificationMessage(@NotNull List<Long> id, @NotNull String message) {
         for (int i = 0; i < id.size(); i++) {
+            BotLogger.LOGGER.atInfo().setMessage(id.get(i).toString()).log();
             SendMessage botReply = new SendMessage(id.get(i), message);
             bot.execute(botReply);
         }
