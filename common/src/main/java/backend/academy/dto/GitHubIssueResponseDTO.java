@@ -1,80 +1,61 @@
 package backend.academy.dto;
 
 import java.time.Instant;
+import lombok.Getter;
+import lombok.Setter;
 
-public class GitHubResponseDTO {
-    private String sha;
-    private CommitDTO commit;
+@Getter
+@Setter
+public class GitHubIssueResponseDTO {
+    private String title;
+    private UserDTO user;
 
-    public static class CommitDTO {
-        private AuthorDTO author;
-        private String message;
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-        public static class AuthorDTO {
-            private String name;
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
 
-            public void setName(String name) {
-                this.name = name;
-            }
+    public void setBody(String body) {
+        this.body = body;
+    }
 
-            public void setEmail(String email) {
-                this.email = email;
-            }
+    public void setCreated_at(Instant created_at) {
+        this.created_at = created_at;
+    }
 
-            public void setDate(Instant date) {
-                this.date = date;
-            }
+    public String getTitle() {
+        return title;
+    }
 
-            public String getName() {
-                return name;
-            }
+    public UserDTO getUser() {
+        return user;
+    }
 
-            public String getEmail() {
-                return email;
-            }
+    public String getBody() {
+        return body;
+    }
 
-            public Instant getDate() {
-                return date;
-            }
+    public Instant getCreated_at() {
+        return created_at;
+    }
 
-            private String email;
-            private Instant date;
+    @Getter
+    @Setter
+    public static class UserDTO {
+        private String login;
+
+        public void setLogin(String login) {
+            this.login = login;
         }
 
-        public Instant getDate() {
-            return author != null ? author.date : null;
-        }
-
-        public void setAuthor(AuthorDTO author) {
-            this.author = author;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public AuthorDTO getAuthor() {
-            return author;
-        }
-
-        public String getMessage() {
-            return message;
+        public String getLogin() {
+            return login;
         }
     }
 
-    public CommitDTO getCommit() {
-        return commit;
-    }
-
-    public void setSha(String sha) {
-        this.sha = sha;
-    }
-
-    public void setCommit(CommitDTO commit) {
-        this.commit = commit;
-    }
-
-    public String getSha() {
-        return sha;
-    }
+    private String body;
+    private Instant created_at;
 }
