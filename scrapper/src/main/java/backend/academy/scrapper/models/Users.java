@@ -1,16 +1,10 @@
 package backend.academy.scrapper.models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "active_users")
@@ -22,9 +16,13 @@ public class Users {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, name = "user_id")
+    @Column(nullable = false, unique = true, name = "user_id")
     private Long userId;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "user_links",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "link_id"))
     private List<LinkInfo> links = new ArrayList<>();
 }
