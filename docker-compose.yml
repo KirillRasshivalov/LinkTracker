@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:13
-    container_name: my_postgres
+    container_name: my_postgres1
     environment:
       POSTGRES_USER: kirill
       POSTGRES_PASSWORD: kirill
