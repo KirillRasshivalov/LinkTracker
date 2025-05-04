@@ -8,8 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /** Класс с методами для выполнения запросов к бд. */
+@Component
 @RequiredArgsConstructor
 public class LinkInfoJdbcRepository {
     private final Connecting connecting;
@@ -83,6 +85,46 @@ public class LinkInfoJdbcRepository {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, userId);
             stmt.setString(2, link);
+            stmt.executeUpdate();
+        }
+    }
+
+    public Long save(String url, String filter, String teg) throws SQLException {
+        connection = connecting.createConnection();
+        // Сначала пробуем вставить, если ссылка уже есть - получаем ее ID
+        String sql = "INSERT INTO link_info (link, filters, tegs) VALUES (?, ?, ?) "
+                + "ON CONFLICT (link) DO UPDATE SET link = EXCLUDED.link RETURNING id";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, url);
+            stmt.setString(2, filter);
+            stmt.setString(3, teg);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+            }
+        }
+        throw new SQLException("Failed to save link");
+    }
+
+    public int countAllLinks() throws SQLException {
+        connection = connecting.createConnection();
+        String sql = "SELECT COUNT(*) FROM link_info";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public void deleteAllUserLinks(Long userId) throws SQLException {
+        connection = connecting.createConnection();
+        String sql = "DELETE FROM user_links WHERE user_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, userId);
             stmt.executeUpdate();
         }
     }

@@ -7,8 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /** Класс с методами для выполнения запросов к бд. */
+@Component
 @RequiredArgsConstructor
 public class UserJdbcRepository {
     private final Connecting connecting;
@@ -48,6 +50,25 @@ public class UserJdbcRepository {
                 }
                 return Optional.empty();
             }
+        }
+    }
+
+    public void save(Long userId) throws SQLException {
+        connection = connecting.createConnection();
+        String sql = "INSERT INTO users (user_id) VALUES (?) ON CONFLICT (user_id) DO NOTHING";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, userId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void addLinkToUser(Long userId, Long linkId) throws SQLException {
+        connection = connecting.createConnection();
+        String sql = "INSERT INTO user_links (user_id, link_id) VALUES (?, ?) ON CONFLICT DO NOTHING";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, userId);
+            stmt.setLong(2, linkId);
+            stmt.executeUpdate();
         }
     }
 }
