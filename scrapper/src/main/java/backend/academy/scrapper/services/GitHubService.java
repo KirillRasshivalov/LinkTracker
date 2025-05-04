@@ -33,7 +33,26 @@ public class GitHubService {
                         issue.getBody(),
                         issue.getUser() != null ? issue.getUser().getLogin() : "unknown",
                         issue.getCreated_at(),
-                        issue.getTitle()))
+                        issue.getTitle(),
+                        "issue"))
+                .singleOrEmpty();
+    }
+
+    public Mono<MainInfoFromGithubDTO> getInfoFromPullRequest(String url) {
+        GitHubLinkParser.GitHubLink link = GitHubLinkParser.parse(url);
+        return WEB_CLIENT
+                .get()
+                .uri("/repos/{owner}/{repo}/pulls", link.getOwner(), link.getRepo())
+                .header("Authorization", "Bearer " + GIT_HUB_TOKEN)
+                .retrieve()
+                .bodyToFlux(GitHubIssueResponseDTO.class)
+                .take(1)
+                .map(pull -> new MainInfoFromGithubDTO(
+                        pull.getBody(),
+                        pull.getUser() != null ? pull.getUser().getLogin() : "unknown",
+                        pull.getCreated_at(),
+                        pull.getTitle(),
+                        "PullRequest"))
                 .singleOrEmpty();
     }
 }
