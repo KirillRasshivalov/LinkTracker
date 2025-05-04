@@ -1,6 +1,6 @@
 package backend.academy.scrapper.services;
 
-import backend.academy.dto.MainInfoFromGithubDTO;
+import backend.academy.scrapper.managers.CheckLink;
 import backend.academy.scrapper.models.LinkInfo;
 import backend.academy.scrapper.notifications.HTTPSender;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -25,6 +25,7 @@ public class UpdateCheckerService {
     private final GitHubService GIT_HUB_SERVICE;
     private final StackOverflowService STACKOVERFLOW_SERVICE;
     private final DatabaseService DATABASE_SERVICE;
+    private final CheckLink checkLink = new CheckLink();
 
     private final Map<String, Instant> trackedLinks = new ConcurrentHashMap<>();
 
@@ -35,14 +36,6 @@ public class UpdateCheckerService {
         this.GIT_HUB_SERVICE = gitHubService;
         this.STACKOVERFLOW_SERVICE = stackOverflowService;
         this.DATABASE_SERVICE = databaseService;
-    }
-
-    private boolean isGitHubLink(String link) {
-        return link.startsWith("https://github.com/");
-    }
-
-    private boolean isStackOverflowLink(String link) {
-        return link.startsWith("https://stackoverflow.com/");
     }
 
     @Scheduled(fixedRate = 10000)
@@ -68,7 +61,7 @@ public class UpdateCheckerService {
     private void processLink(LinkInfo linkInfo, HTTPSender httpSender) {
         String url = linkInfo.link();
         try {
-            if (isGitHubLink(url)) {
+            if (checkLink.isGitHubLink(url)) {
                 ServerLogger.LOGGER
                         .atInfo()
                         .setMessage("Проверяем наличие обновлений по ссылки с гитхаба.")
@@ -85,7 +78,6 @@ public class UpdateCheckerService {
                                             synchronized (trackedLinks) {
                                                 trackedLinks.put(url, issue.createdAt());
                                             }
-
                                             httpSender.sendNotification(url, extractUserIds(linkInfo), issue);
                                         }
                                     },
@@ -94,26 +86,41 @@ public class UpdateCheckerService {
                                             .setMessage("Ошибка при проверке обновлений для ссылки: " + url
                                                     + ", ошибка: " + error.getMessage())
                                             .log());
+                    GIT_HUB_SERVICE
+                            .getInfoFromPullRequest(url)
+                            .subscribe(
+                                    pullRequest -> {
+                                        Instant lastUpdated = trackedLinks.get(url);
+                                        if (lastUpdated == null
+                                                || pullRequest.createdAt().isAfter(lastUpdated)) {
+                                            synchronized (trackedLinks) {
+                                                trackedLinks.put(url, pullRequest.createdAt());
+                                            }
+                                            httpSender.sendNotification(url, extractUserIds(linkInfo), pullRequest);
+                                        }
+                                    },
+                                    error -> ServerLogger.LOGGER
+                                            .atError()
+                                            .setMessage("Ошибка при проверке обновлений для пул реквеста ссылки: " + url
+                                                    + "\nОшибка " + error.getMessage())
+                                            .log());
                 }
-            } else if (isStackOverflowLink(url)) {
+            } else if (checkLink.isStackOverflowLink(url)) {
                 ServerLogger.LOGGER
                         .atInfo()
                         .setMessage("Проверяем наличие обновлений по ссылке с стековерфлоу.")
                         .log();
                 synchronized (STACKOVERFLOW_SERVICE) {
                     STACKOVERFLOW_SERVICE
-                            .getLastActivityDate(url)
+                            .getInfoFromStackOverflow(url)
                             .subscribe(
-                                    lastActivityDate -> {
+                                    info -> {
                                         Instant lastUpdated = trackedLinks.get(url);
-                                        if (lastUpdated == null || lastActivityDate.isAfter(lastUpdated)) {
+                                        if (lastUpdated == null || info.time().isAfter(lastUpdated)) {
                                             synchronized (trackedLinks) {
-                                                trackedLinks.put(url, lastActivityDate);
+                                                trackedLinks.put(url, info.time());
                                             }
-                                            httpSender.sendNotification(
-                                                    url,
-                                                    extractUserIds(linkInfo),
-                                                    new MainInfoFromGithubDTO("", "", lastActivityDate, ""));
+                                            httpSender.sendNotification(url, extractUserIds(linkInfo), info);
                                         }
                                     },
                                     error -> ServerLogger.LOGGER
