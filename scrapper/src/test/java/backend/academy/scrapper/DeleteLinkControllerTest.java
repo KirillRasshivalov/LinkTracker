@@ -1,28 +1,28 @@
-//package backend.academy.scrapper;
+// package backend.academy.scrapper;
 //
-//import static org.junit.jupiter.api.Assertions.assertTrue;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+// import static org.junit.jupiter.api.Assertions.assertTrue;
+// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
-//import backend.academy.dto.DeleteLinkRequestDTO;
-//import backend.academy.scrapper.controllers.DeleteLinkController;
-//import backend.academy.scrapper.data.LinkData;
-//import backend.academy.scrapper.managers.Collection;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.HashSet;
-//import java.util.List;
-//import org.junit.jupiter.api.AfterEach;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.web.servlet.MockMvc;
+// import backend.academy.dto.DeleteLinkRequestDTO;
+// import backend.academy.scrapper.controllers.DeleteLinkController;
+// import backend.academy.scrapper.data.LinkData;
+// import backend.academy.scrapper.managers.Collection;
+// import com.fasterxml.jackson.databind.ObjectMapper;
+// import java.util.ArrayList;
+// import java.util.HashMap;
+// import java.util.HashSet;
+// import java.util.List;
+// import org.junit.jupiter.api.AfterEach;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+// import org.springframework.http.MediaType;
+// import org.springframework.test.web.servlet.MockMvc;
 //
-//@WebMvcTest(DeleteLinkController.class)
-//public class DeleteLinkControllerTest {
+// @WebMvcTest(DeleteLinkController.class)
+// public class DeleteLinkControllerTest {
 //
 //    @Autowired
 //    private MockMvc mockMvc;
@@ -68,4 +68,4 @@
 //        Long id = Long.valueOf(chatId);
 //        assertTrue(!Collection.linksOwners.get(link).contains(id), "Ссылка не удалена из коллекции");
 //    }
-//}
+// }

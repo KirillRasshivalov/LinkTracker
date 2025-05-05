@@ -1,27 +1,27 @@
-//package backend.academy.scrapper;
+// package backend.academy.scrapper;
 //
-//import static org.junit.jupiter.api.Assertions.assertTrue;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+// import static org.junit.jupiter.api.Assertions.assertTrue;
+// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
-//import backend.academy.dto.AddLinkRequestDTO;
-//import backend.academy.scrapper.controllers.AddLinkController;
-//import backend.academy.scrapper.data.LinkData;
-//import backend.academy.scrapper.managers.Collection;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.HashSet;
-//import org.junit.jupiter.api.AfterEach;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.web.servlet.MockMvc;
+// import backend.academy.dto.AddLinkRequestDTO;
+// import backend.academy.scrapper.controllers.AddLinkController;
+// import backend.academy.scrapper.data.LinkData;
+// import backend.academy.scrapper.managers.Collection;
+// import com.fasterxml.jackson.databind.ObjectMapper;
+// import java.util.ArrayList;
+// import java.util.HashMap;
+// import java.util.HashSet;
+// import org.junit.jupiter.api.AfterEach;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+// import org.springframework.http.MediaType;
+// import org.springframework.test.web.servlet.MockMvc;
 //
-//@WebMvcTest(AddLinkController.class)
-//public class AddLinkControllerTest {
+// @WebMvcTest(AddLinkController.class)
+// public class AddLinkControllerTest {
 //
 //    @Autowired
 //    private MockMvc mockMvc;
@@ -64,4 +64,4 @@
 //        assertTrue(Collection.idInfo.containsKey(id), "Пользователь не добавлен в коллекцию");
 //        assertTrue(Collection.idInfo.get(id).contains(expectedLinkData), "Ссылка не добавлена в коллекцию");
 //    }
-//}
+// }

@@ -1,26 +1,26 @@
-//package backend.academy.scrapper;
+// package backend.academy.scrapper;
 //
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
-//import backend.academy.dto.AddLinkRequestDTO;
-//import backend.academy.dto.DeleteLinkRequestDTO;
-//import backend.academy.scrapper.data.LinkData;
-//import backend.academy.scrapper.managers.Collection;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import java.util.ArrayList;
-//import java.util.List;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.web.servlet.MockMvc;
+// import backend.academy.dto.AddLinkRequestDTO;
+// import backend.academy.dto.DeleteLinkRequestDTO;
+// import backend.academy.scrapper.data.LinkData;
+// import backend.academy.scrapper.managers.Collection;
+// import com.fasterxml.jackson.databind.ObjectMapper;
+// import java.util.ArrayList;
+// import java.util.List;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.http.MediaType;
+// import org.springframework.test.web.servlet.MockMvc;
 //
-//@SpringBootTest
-//@AutoConfigureMockMvc
-//public class BadRequestBodyTest {
+// @SpringBootTest
+// @AutoConfigureMockMvc
+// public class BadRequestBodyTest {
 //    @Autowired
 //    private MockMvc mockMvc;
 //
@@ -95,4 +95,4 @@
 //                        .content(objectMapper.writeValueAsString(requestDTO)))
 //                .andExpect(status().isOk());
 //    }
-//}
+// }
