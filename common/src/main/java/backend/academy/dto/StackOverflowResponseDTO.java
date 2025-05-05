@@ -2,9 +2,7 @@ package backend.academy.dto;
 
 import java.util.List;
 
-/**
- * Дтошка для ответа от стека оверфлоу.
- */
+/** Дтошка для ответа от стека оверфлоу. */
 public class StackOverflowResponseDTO {
     private List<Question> items;
 

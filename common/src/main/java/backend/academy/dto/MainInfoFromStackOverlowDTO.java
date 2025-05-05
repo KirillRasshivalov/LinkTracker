@@ -4,6 +4,7 @@ import java.time.Instant;
 
 /**
  * Класс для общей информации ответа от стек оверфлоу.
+ *
  * @param theme
  * @param name
  * @param time

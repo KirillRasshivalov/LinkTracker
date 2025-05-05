@@ -4,6 +4,7 @@ import java.time.Instant;
 
 /**
  * Класс для общей информации об обновлении для гитхаба.
+ *
  * @param message
  * @param authorName
  * @param createdAt

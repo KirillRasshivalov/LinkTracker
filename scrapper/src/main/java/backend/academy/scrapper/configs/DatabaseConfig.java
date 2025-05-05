@@ -11,9 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Конфиг для выбора какую реализация общения с бд использовать в программе.
- */
+/** Конфиг для выбора какую реализация общения с бд использовать в программе. */
 @Configuration
 public class DatabaseConfig {
     @Bean

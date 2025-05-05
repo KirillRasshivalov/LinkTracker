@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-/**
- * Класс для реализации методов общения с бд с использованием jpa.
- */
+/** Класс для реализации методов общения с бд с использованием jpa. */
 @Transactional
 @RequiredArgsConstructor
 public class JpaDatabase implements Datasourse {

@@ -15,9 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-/**
- * Класс для реализации методов для общения с бд, с использованием jdbc.
- */
+/** Класс для реализации методов для общения с бд, с использованием jdbc. */
 @Transactional
 @RequiredArgsConstructor
 public class JdbcDatabase implements Datasourse {

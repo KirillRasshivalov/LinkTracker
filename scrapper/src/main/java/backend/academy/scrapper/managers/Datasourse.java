@@ -6,9 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-/**
- * Интерфейс для реализации методов обращения к бд.
- */
+/** Интерфейс для реализации методов обращения к бд. */
 public interface Datasourse {
     void addUser(Long id);
 
