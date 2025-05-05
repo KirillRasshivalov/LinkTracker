@@ -1,20 +1,20 @@
- package backend.academy.bot;
+package backend.academy.bot;
 
- import static org.junit.jupiter.api.Assertions.assertEquals;
- import static org.mockito.Mockito.*;
- import static org.mockito.Mockito.times;
- import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
- import com.pengrad.telegrambot.TelegramBot;
- import com.pengrad.telegrambot.request.SendMessage;
- import java.util.Arrays;
- import java.util.List;
- import org.junit.jupiter.api.BeforeEach;
- import org.junit.jupiter.api.Test;
- import org.mockito.ArgumentCaptor;
- import org.mockito.Mockito;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.SendMessage;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
- class MyTelegramBotTest {
+class MyTelegramBotTest {
 
     private TelegramBot mockBot;
     private MyTelegramBot myTelegramBot;
@@ -52,4 +52,4 @@
             throw new RuntimeException("Ошибка", e);
         }
     }
- }
+}

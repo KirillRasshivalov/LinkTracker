@@ -1,14 +1,14 @@
- package backend.academy.bot;
+package backend.academy.bot;
 
- import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
- import backend.academy.bot.managers.links.LinksDataParser;
- import backend.academy.dto.LinkInfoDTO;
- import backend.academy.dto.ShowListResponseDTO;
- import java.util.List;
- import org.junit.jupiter.api.Test;
+import backend.academy.bot.managers.links.LinksDataParser;
+import backend.academy.dto.LinkInfoDTO;
+import backend.academy.dto.ShowListResponseDTO;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
- public class LinkDataParserTest {
+public class LinkDataParserTest {
 
     @Test
     public void testOfCorrectLinkParsing() {
@@ -20,4 +20,4 @@
         assertTrue(LinksDataParser.parseInfo(showListResponseDTO).contains("[tag1, tag2]"));
         assertTrue(LinksDataParser.parseInfo(showListResponseDTO).contains("[filt1]"));
     }
- }
+}

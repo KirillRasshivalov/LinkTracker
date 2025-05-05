@@ -1,21 +1,21 @@
- package backend.academy.bot;
+package backend.academy.bot;
 
- import static org.junit.Assert.assertEquals;
- import static org.junit.Assert.assertNotEquals;
- import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Mockito.when;
 
- import backend.academy.bot.commands.CommandHandler;
- import com.pengrad.telegrambot.TelegramBot;
- import com.pengrad.telegrambot.model.Chat;
- import com.pengrad.telegrambot.model.Message;
- import com.pengrad.telegrambot.model.Update;
- import java.io.IOException;
- import org.junit.jupiter.api.BeforeEach;
- import org.junit.jupiter.api.Test;
- import org.mockito.Mock;
- import org.mockito.MockitoAnnotations;
+import backend.academy.bot.commands.CommandHandler;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.Update;
+import java.io.IOException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
- public class UnknownCommandTest {
+public class UnknownCommandTest {
     @Mock
     private TelegramBot bot;
 
@@ -62,4 +62,4 @@
 
         assertNotEquals("Данная команда не поддерживается.", CommandHandler.getCommandMessage(update));
     }
- }
+}

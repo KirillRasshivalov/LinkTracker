@@ -1,21 +1,21 @@
- package backend.academy.bot;
+package backend.academy.bot;
 
- import static org.junit.Assert.assertEquals;
- import static org.junit.Assert.assertNotNull;
- import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
 
- import backend.academy.bot.commands.export.AddLinkCommand;
- import backend.academy.dto.AddLinkRequestDTO;
- import com.pengrad.telegrambot.model.Chat;
- import com.pengrad.telegrambot.model.Message;
- import com.pengrad.telegrambot.model.Update;
- import java.util.List;
- import org.junit.jupiter.api.BeforeEach;
- import org.junit.jupiter.api.Test;
- import org.mockito.Mock;
- import org.mockito.MockitoAnnotations;
+import backend.academy.bot.commands.export.AddLinkCommand;
+import backend.academy.dto.AddLinkRequestDTO;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.Update;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
- public class ParseLinkTest {
+public class ParseLinkTest {
 
     private AddLinkCommand addLinkCommand;
 
@@ -65,4 +65,4 @@
         assertEquals(List.of(""), requestDTO.getTags());
         assertEquals(List.of(""), requestDTO.getFilters());
     }
- }
+}
