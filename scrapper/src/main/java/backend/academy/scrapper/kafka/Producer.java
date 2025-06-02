@@ -9,14 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-/**
- * Продюсер для отправки сообщений в очередь.
- */
+/** Продюсер для отправки сообщений в очередь. */
 @Service
 @RequiredArgsConstructor
 public class Producer {
-    private static final ObjectMapper objectMapper = new ObjectMapper()
-        .registerModule(new JavaTimeModule());
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 

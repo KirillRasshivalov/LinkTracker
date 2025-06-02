@@ -6,12 +6,10 @@ import backend.academy.dto.MainInfoFromStackOverlowDTO;
 import backend.academy.scrapper.kafka.Producer;
 import backend.academy.scrapper.managers.CheckLink;
 import backend.academy.scrapper.services.ServerLogger;
-import lombok.RequiredArgsConstructor;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
-/**
- * Реализация метода отправки сообщения по средствам kafka
- */
+/** Реализация метода отправки сообщения по средствам kafka */
 @RequiredArgsConstructor
 public class KafkaSender implements Sender {
     private final CheckLink checkLink = new CheckLink();
@@ -27,19 +25,19 @@ public class KafkaSender implements Sender {
                 linkUpdateRequestDTO.setId(IDS.get(i));
                 linkUpdateRequestDTO.setTgChatIds(IDS);
                 linkUpdateRequestDTO.setDescription("Пришло обновление по ссылке: " + link + ".\n" + "Автор: "
-                    + mainInfoFromGithubDTO.authorName() + ".\n" + "Содержание: "
-                    + mainInfoFromGithubDTO.message() + ".\n" + "Название " + mainInfoFromGithubDTO.type() + ": "
-                    + mainInfoFromGithubDTO.nameOfAnswer() + ".\n" + "Время последнего коммита: "
-                    + mainInfoFromGithubDTO.createdAt() + ".\n");
+                        + mainInfoFromGithubDTO.authorName() + ".\n" + "Содержание: "
+                        + mainInfoFromGithubDTO.message() + ".\n" + "Название " + mainInfoFromGithubDTO.type() + ": "
+                        + mainInfoFromGithubDTO.nameOfAnswer() + ".\n" + "Время последнего коммита: "
+                        + mainInfoFromGithubDTO.createdAt() + ".\n");
                 try {
                     producer.sendMessage(linkUpdateRequestDTO, false);
                 } catch (Exception e) {
                     ServerLogger.LOGGER.atError().setMessage(e.getMessage()).log();
                 }
                 ServerLogger.LOGGER
-                    .atInfo()
-                    .setMessage("Отправил сообщение в очередь.")
-                    .log();
+                        .atInfo()
+                        .setMessage("Отправил сообщение в очередь.")
+                        .log();
             }
         } else {
             MainInfoFromStackOverlowDTO mainInfoFromStackOverlowDTO = (MainInfoFromStackOverlowDTO) info;
@@ -49,10 +47,10 @@ public class KafkaSender implements Sender {
                 linkUpdateRequestDTO.setId(IDS.get(i));
                 linkUpdateRequestDTO.setTgChatIds(IDS);
                 linkUpdateRequestDTO.setDescription("Пришло обновление по ссылке: " + link + ".\n" + "Автор: "
-                    + mainInfoFromStackOverlowDTO.name() + ".\n" + "Тема: "
-                    + mainInfoFromStackOverlowDTO.theme() + ".\n" + "Комментарий: "
-                    + mainInfoFromStackOverlowDTO.answer() + ".\n" + "Время последнего коммита: "
-                    + mainInfoFromStackOverlowDTO.time() + ".\n");
+                        + mainInfoFromStackOverlowDTO.name() + ".\n" + "Тема: "
+                        + mainInfoFromStackOverlowDTO.theme() + ".\n" + "Комментарий: "
+                        + mainInfoFromStackOverlowDTO.answer() + ".\n" + "Время последнего коммита: "
+                        + mainInfoFromStackOverlowDTO.time() + ".\n");
                 String botUrl = "http://localhost:8080/updates";
                 try {
                     producer.sendMessage(linkUpdateRequestDTO, false);
@@ -60,9 +58,9 @@ public class KafkaSender implements Sender {
                     ServerLogger.LOGGER.atError().setMessage(e.getMessage()).log();
                 }
                 ServerLogger.LOGGER
-                    .atInfo()
-                    .setMessage("Отправил сообщение в очередь")
-                    .log();
+                        .atInfo()
+                        .setMessage("Отправил сообщение в очередь")
+                        .log();
             }
         }
     }

@@ -1,6 +1,5 @@
 package backend.academy.scrapper.configs;
 
-
 import backend.academy.scrapper.kafka.Producer;
 import backend.academy.scrapper.notifications.HTTPSender;
 import backend.academy.scrapper.notifications.KafkaSender;
@@ -9,9 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Конфиг для выбора какую реализацию отправки сообщений использовать.
- */
+/** Конфиг для выбора какую реализацию отправки сообщений использовать. */
 @Configuration
 public class TransportConfig {
     @Bean
