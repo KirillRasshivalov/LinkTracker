@@ -1,6 +1,7 @@
 package backend.academy.scrapper.kafka;
 
 import backend.academy.dto.LinkUpdateRequestDTO;
+import backend.academy.scrapper.services.ServerLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,6 +21,7 @@ public class Producer {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     public void sendMessage(LinkUpdateRequestDTO message, boolean isError) throws JsonProcessingException {
+        ServerLogger.LOGGER.atInfo().setMessage("Отправил сообщение в брокер.").log();
         String topic = isError ? "error-messages" : "valid-messages";
         String jsonMessage = objectMapper.writeValueAsString(message);
         kafkaTemplate.send(topic, String.valueOf(message.getId()), jsonMessage);
