@@ -1,10 +1,14 @@
 package backend.academy.scrapper;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import backend.academy.dto.LinkUpdateRequestDTO;
 import backend.academy.scrapper.kafka.Producer;
 import backend.academy.scrapper.services.ServerLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -12,10 +16,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.kafka.core.KafkaTemplate;
-
-import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class ProducerTest {
 
@@ -57,6 +57,10 @@ class ProducerTest {
         assertEquals(request.getDescription(), deserialized.getDescription());
         assertEquals(request.getUrl(), deserialized.getUrl());
 
-        verify(serverLogger).LOGGER.atInfo().setMessage("Отправил сообщение в брокер.").log();
+        verify(serverLogger)
+                .LOGGER
+                .atInfo()
+                .setMessage("Отправил сообщение в брокер.")
+                .log();
     }
 }

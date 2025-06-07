@@ -21,7 +21,7 @@ public class DeleteLinkCommand implements ServerCommands {
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
-    @CacheEvict(value = "list_cache", key="#update.message().chat().id().toString()")
+    @CacheEvict(value = "list_cache", key = "#update.message().chat().id().toString()")
     public String applyCommand(String link, Update update) {
 
         DeleteLinkRequestDTO deleteLinkRequestDTO = new DeleteLinkRequestDTO();

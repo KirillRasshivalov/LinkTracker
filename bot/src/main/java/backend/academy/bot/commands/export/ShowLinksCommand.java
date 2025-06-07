@@ -22,7 +22,7 @@ public class ShowLinksCommand implements ServerCommands {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    @Cacheable(value = "list_cache", key="#update.message().chat().id().toString()")
+    @Cacheable(value = "list_cache", key = "#update.message().chat().id().toString()")
     public String applyCommand(String message, Update update) {
 
         BotLogger.LOGGER

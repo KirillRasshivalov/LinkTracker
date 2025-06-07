@@ -1,9 +1,9 @@
 package backend.academy.dto;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.List;
+import lombok.NoArgsConstructor;
 
 @SuppressFBWarnings("PA_PUBLIC_PRIMITIVE_ATTRIBUTE")
 @NoArgsConstructor
