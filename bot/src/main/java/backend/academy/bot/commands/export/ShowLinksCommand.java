@@ -20,7 +20,7 @@ public class ShowLinksCommand implements ServerCommands {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    @Cacheable(value="link_cach")
+    @Cacheable(value = "link_cach")
     public String applyCommand(String message, Update update) {
 
         BotLogger.LOGGER

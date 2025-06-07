@@ -19,7 +19,7 @@ public class DeleteLinkCommand implements ServerCommands {
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
-    @CacheEvict(value="link_cach")
+    @CacheEvict(value = "link_cach")
     public String applyCommand(String link, Update update) {
 
         DeleteLinkRequestDTO deleteLinkRequestDTO = new DeleteLinkRequestDTO();

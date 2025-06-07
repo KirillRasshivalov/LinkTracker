@@ -1,17 +1,14 @@
 package backend.academy.bot.commands.kafka;
 
+import static backend.academy.bot.MyTelegramBot.notificationMessage;
+
 import backend.academy.bot.services.BotLogger;
 import backend.academy.dto.LinkUpdateRequestDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import static backend.academy.bot.MyTelegramBot.notificationMessage;
 
 /** Класс консьюмер для принятия сообщений с брокера. */
 @Service
