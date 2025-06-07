@@ -27,7 +27,7 @@ public class AddLinkCommand implements ServerCommands {
     private AddLinkRequestDTO lastRequestDTO;
 
     @Override
-    @CacheEvict(value = "list_cache", key="#update.message().chat().id().toString()")
+    @CacheEvict(value = "list_cache", key = "#update.message().chat().id().toString()")
     public String applyCommand(@NotNull String command, @NotNull Update update) {
 
         BotLogger.LOGGER
