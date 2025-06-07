@@ -35,6 +35,10 @@ spring:
       group-id: json-consumer-groupp
       auto-offset-reset: earliest
       enable-auto-commit: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 server:
   port: 8081

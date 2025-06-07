@@ -10,6 +10,20 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+  kafka:
+    bootstrap-servers: localhost:19092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: json-consumer-groupp
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 
 server:
   port: 8080
