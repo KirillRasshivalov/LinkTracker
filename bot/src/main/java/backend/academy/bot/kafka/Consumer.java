@@ -1,4 +1,4 @@
-package backend.academy.bot.commands.kafka;
+package backend.academy.bot.kafka;
 
 import static backend.academy.bot.MyTelegramBot.notificationMessage;
 
