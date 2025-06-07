@@ -5,6 +5,7 @@ import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.DeleteLinkRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.model.Update;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,6 +19,7 @@ public class DeleteLinkCommand implements ServerCommands {
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
+    @CacheEvict(value="link_cach")
     public String applyCommand(String link, Update update) {
 
         DeleteLinkRequestDTO deleteLinkRequestDTO = new DeleteLinkRequestDTO();
