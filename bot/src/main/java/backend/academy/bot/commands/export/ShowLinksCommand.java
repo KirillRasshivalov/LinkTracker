@@ -6,6 +6,7 @@ import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.ShowListResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.model.Update;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,6 +20,7 @@ public class ShowLinksCommand implements ServerCommands {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
+    @Cacheable(value="link_cach")
     public String applyCommand(String message, Update update) {
 
         BotLogger.LOGGER
