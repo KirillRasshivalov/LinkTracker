@@ -13,11 +13,13 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /** Класс для отправки новой отслеживаемой ссылки на скрепер и ожидающий ответа от него. */
 @SuppressWarnings("StringSplitter")
+@Component
 public class AddLinkCommand implements ServerCommands {
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -25,7 +27,7 @@ public class AddLinkCommand implements ServerCommands {
     private AddLinkRequestDTO lastRequestDTO;
 
     @Override
-    @CacheEvict(value = "list_cach")
+    @CacheEvict(value = "list_cache", key="#update.message().chat().id().toString()")
     public String applyCommand(@NotNull String command, @NotNull Update update) {
 
         BotLogger.LOGGER

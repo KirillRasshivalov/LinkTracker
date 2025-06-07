@@ -11,16 +11,18 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /** Класс для показа всех ссылок которые принадлежат данному пользователю. */
+@Component
 public class ShowLinksCommand implements ServerCommands {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    @Cacheable(value = "link_cach")
+    @Cacheable(value = "list_cache", key="#update.message().chat().id().toString()")
     public String applyCommand(String message, Update update) {
 
         BotLogger.LOGGER
