@@ -51,7 +51,6 @@ public class KafkaSender implements Sender {
                         + mainInfoFromStackOverlowDTO.theme() + ".\n" + "Комментарий: "
                         + mainInfoFromStackOverlowDTO.answer() + ".\n" + "Время последнего коммита: "
                         + mainInfoFromStackOverlowDTO.time() + ".\n");
-                String botUrl = "http://localhost:8080/updates";
                 try {
                     producer.sendMessage(linkUpdateRequestDTO, false);
                 } catch (Exception e) {
