@@ -3,16 +3,27 @@ app:
   stackoverflow:
     key: ${SO_TOKEN_KEY}
     access-token: ${SO_ACCESS_TOKEN}
+  access-type: JPA
 
 spring:
   application:
     name: Scrapper
   liquibase:
     enabled: false
+    change-log: ../../../../db.changelog-master.xml
   jpa:
     hibernate:
       ddl-auto: validate
+    ## ddl-auto: validate
     open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: ${URL}
+    username: ${USERNAME}
+    password: ${PSQL_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
 server:
   port: 8081

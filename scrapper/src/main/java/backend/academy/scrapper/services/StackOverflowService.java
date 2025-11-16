@@ -1,5 +1,6 @@
 package backend.academy.scrapper.services;
 
+import backend.academy.dto.MainInfoFromStackOverlowDTO;
 import backend.academy.dto.StackOverflowResponseDTO;
 import backend.academy.scrapper.ScrapperConfig;
 import backend.academy.scrapper.managers.StackOverflowLinkParser;
@@ -23,7 +24,7 @@ public class StackOverflowService {
         this.STACKOVERFLOW_ACCESS_TOKEN = appConfig.stackOverflow().accessToken();
     }
 
-    public Mono<Instant> getLastActivityDate(String url) {
+    public Mono<MainInfoFromStackOverlowDTO> getInfoFromStackOverflow(String url) {
         String questionId = StackOverflowLinkParser.parseQuestionId(url);
         return WEB_CLIENT
                 .get()
@@ -32,14 +33,26 @@ public class StackOverflowService {
                         .queryParam("site", "stackoverflow")
                         .queryParam("key", STACKOVERFLOW_KEY)
                         .queryParam("access_token", STACKOVERFLOW_ACCESS_TOKEN)
+                        .queryParam("filter", "withbody") // Добавляем тело вопроса
                         .build(questionId))
                 .retrieve()
                 .bodyToMono(StackOverflowResponseDTO.class)
                 .map(response -> {
-                    if (!response.getItems().isEmpty()) {
-                        return Instant.ofEpochSecond(response.getItems().get(0).getCreation_date());
+                    if (response.getItems().isEmpty()) {
+                        return null;
                     }
-                    return null;
+                    var question = response.getItems().get(0);
+                    String answerPreview = "";
+                    if (!question.getAnswers().isEmpty()) {
+                        String firstAnswer = question.getAnswers().get(0).getBody();
+                        answerPreview =
+                                firstAnswer.length() > 200 ? firstAnswer.substring(0, 200) + "..." : firstAnswer;
+                    }
+                    return new MainInfoFromStackOverlowDTO(
+                            question.getTitle(),
+                            question.getOwner().getDisplayName(),
+                            Instant.ofEpochSecond(question.getCreation_date()),
+                            answerPreview);
                 });
     }
 }

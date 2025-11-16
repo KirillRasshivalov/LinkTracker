@@ -1,13 +1,11 @@
 package backend.academy.scrapper.controllers;
 
-import backend.academy.dto.LinkInfoDTO;
 import backend.academy.dto.ShowListResponseDTO;
-import backend.academy.scrapper.data.LinkData;
-import backend.academy.scrapper.managers.Collection;
 import backend.academy.scrapper.managers.ErrorHandler;
+import backend.academy.scrapper.services.DatabaseService;
+import backend.academy.scrapper.services.LinkService;
 import backend.academy.scrapper.services.ServerLogger;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -15,7 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 /** Контроллер для вывода всех отслеживаемых ссылок данным пользователем. */
 @RestController
+@RequiredArgsConstructor
 public class ShowLinkController {
+
+    private final DatabaseService databaseService;
+    private final LinkService linkService;
 
     @GetMapping("/links")
     public ResponseEntity<?> showLink(@RequestHeader("tg-chat-id") String chatId) {
@@ -26,19 +28,12 @@ public class ShowLinkController {
 
         Long id = Long.parseLong(chatId);
 
-        if (Collection.idInfo.containsKey(id)) {
+        if (linkService.findConnectedLinks(id)) {
             ShowListResponseDTO showListResponseDTO = new ShowListResponseDTO();
-            List<LinkData> linkInfoDTOS = Collection.idInfo.get(id);
-            List<LinkInfoDTO> linkInfoDTOList = new ArrayList<>();
-            for (LinkData linkData : linkInfoDTOS) {
-                linkInfoDTOList.add(new LinkInfoDTO(id, linkData.link(), linkData.tags(), linkData.filter()));
-            }
-            showListResponseDTO.setLinks(linkInfoDTOList);
-            showListResponseDTO.setSize((long) linkInfoDTOList.size());
-
+            showListResponseDTO.setLinks(databaseService.showLinks(id));
+            showListResponseDTO.setSize((long) databaseService.showLinks(id).size());
             return ResponseEntity.ok().body(showListResponseDTO);
-        } else {
-            return ResponseEntity.badRequest().body(ErrorHandler.userHasNoLinks());
         }
+        return ResponseEntity.badRequest().body(ErrorHandler.userHasNoLinks());
     }
 }

@@ -1,9 +1,9 @@
 package backend.academy.scrapper.services;
 
-import backend.academy.dto.GitHubResponseDTO;
+import backend.academy.dto.GitHubIssueResponseDTO;
+import backend.academy.dto.MainInfoFromGithubDTO;
 import backend.academy.scrapper.ScrapperConfig;
 import backend.academy.scrapper.managers.GitHubLinkParser;
-import java.time.Instant;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -20,16 +20,39 @@ public class GitHubService {
         this.GIT_HUB_TOKEN = appConfig.githubToken();
     }
 
-    public Mono<Instant> getLastCommitDate(String url) {
+    public Mono<MainInfoFromGithubDTO> getInfoFromIssue(String url) {
         GitHubLinkParser.GitHubLink link = GitHubLinkParser.parse(url);
         return WEB_CLIENT
                 .get()
-                .uri("/repos/{owner}/{repo}/commits", link.getOwner(), link.getRepo())
+                .uri("/repos/{owner}/{repo}/issues?state=all", link.getOwner(), link.getRepo())
                 .header("Authorization", "Bearer " + GIT_HUB_TOKEN)
                 .retrieve()
-                .bodyToFlux(GitHubResponseDTO.class)
+                .bodyToFlux(GitHubIssueResponseDTO.class)
                 .take(1)
-                .map(commit -> commit.getCommit().getDate())
+                .map(issue -> new MainInfoFromGithubDTO(
+                        issue.getBody(),
+                        issue.getUser() != null ? issue.getUser().getLogin() : "unknown",
+                        issue.getCreated_at(),
+                        issue.getTitle(),
+                        "issue"))
+                .singleOrEmpty();
+    }
+
+    public Mono<MainInfoFromGithubDTO> getInfoFromPullRequest(String url) {
+        GitHubLinkParser.GitHubLink link = GitHubLinkParser.parse(url);
+        return WEB_CLIENT
+                .get()
+                .uri("/repos/{owner}/{repo}/pulls", link.getOwner(), link.getRepo())
+                .header("Authorization", "Bearer " + GIT_HUB_TOKEN)
+                .retrieve()
+                .bodyToFlux(GitHubIssueResponseDTO.class)
+                .take(1)
+                .map(pull -> new MainInfoFromGithubDTO(
+                        pull.getBody(),
+                        pull.getUser() != null ? pull.getUser().getLogin() : "unknown",
+                        pull.getCreated_at(),
+                        pull.getTitle(),
+                        "PullRequest"))
                 .singleOrEmpty();
     }
 }

@@ -1,116 +1,144 @@
 package backend.academy.scrapper.services;
 
-import backend.academy.dto.LinkUpdateRequestDTO;
-import backend.academy.scrapper.managers.Collection;
+import backend.academy.scrapper.managers.CheckLink;
+import backend.academy.scrapper.models.LinkInfo;
+import backend.academy.scrapper.notifications.HTTPSender;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 /** Сервис для проверки ссылок на обновления, и последующей отправки их юзерам. */
 @Service
+@SuppressFBWarnings("JLM_JSR166_UTILCONCURRENT_MONITORENTER")
 public class UpdateCheckerService {
 
-    private final Map<String, Instant> TRACKED_LINKS = new HashMap<>();
-    private final Map<String, List<Long>> LINKS = Collection.linksOwners;
     private final GitHubService GIT_HUB_SERVICE;
     private final StackOverflowService STACKOVERFLOW_SERVICE;
+    private final DatabaseService DATABASE_SERVICE;
+    private final CheckLink checkLink = new CheckLink();
 
-    public UpdateCheckerService(GitHubService gitHubService, StackOverflowService stackOverflowService) {
+    private final Map<String, Instant> trackedLinks = new ConcurrentHashMap<>();
+
+    private final ExecutorService executor = Executors.newFixedThreadPool(10);
+
+    public UpdateCheckerService(
+            GitHubService gitHubService, StackOverflowService stackOverflowService, DatabaseService databaseService) {
         this.GIT_HUB_SERVICE = gitHubService;
         this.STACKOVERFLOW_SERVICE = stackOverflowService;
-    }
-
-    private boolean isGitHubLink(String link) {
-        return link.startsWith("https://github.com/");
-    }
-
-    private boolean isStackOverflowLink(String link) {
-        return link.startsWith("https://stackoverflow.com/");
+        this.DATABASE_SERVICE = databaseService;
     }
 
     @Scheduled(fixedRate = 10000)
+    @Transactional
     public void checkForUpdates() {
-        for (Map.Entry<String, List<Long>> entry : LINKS.entrySet()) {
-            String link = entry.getKey();
-            if (isGitHubLink(link)) {
+        HTTPSender httpSender = new HTTPSender();
+        int pageSize = 100;
+        int pageNumber = 0;
+
+        Page<LinkInfo> page;
+
+        do {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            page = DATABASE_SERVICE.showLinks(pageable);
+
+            for (LinkInfo linkInfo : page.getContent()) {
+                var unused = executor.submit(() -> processLink(linkInfo, httpSender));
+            }
+            pageNumber++;
+        } while (page.hasNext());
+    }
+
+    private void processLink(LinkInfo linkInfo, HTTPSender httpSender) {
+        String url = linkInfo.link();
+        try {
+            if (checkLink.isGitHubLink(url)) {
                 ServerLogger.LOGGER
                         .atInfo()
                         .setMessage("Проверяем наличие обновлений по ссылки с гитхаба.")
                         .log();
-                GIT_HUB_SERVICE
-                        .getLastCommitDate(link)
-                        .subscribe(
-                                lastCommitDate -> {
-                                    Instant lastUpdated = null;
-                                    if (TRACKED_LINKS.containsKey(link)) {
-                                        lastUpdated = TRACKED_LINKS.get(link);
-                                    }
-                                    if (lastUpdated == null || lastCommitDate.isAfter(lastUpdated)) {
-                                        TRACKED_LINKS.put(link, lastCommitDate);
-                                        notifyUser(link);
-                                    }
-                                },
-                                error -> ServerLogger.LOGGER
-                                        .atError()
-                                        .setMessage("Ошибка при проверке обновлений для ссылки: " + link + ", ошибка: "
-                                                + error.getMessage())
-                                        .log());
-            } else if (isStackOverflowLink(link)) {
+                synchronized (GIT_HUB_SERVICE) {
+                    GIT_HUB_SERVICE
+                            .getInfoFromIssue(url)
+                            .subscribe(
+                                    issue -> {
+                                        Instant lastUpdated = trackedLinks.get(url);
+                                        if (lastUpdated == null
+                                                || issue.createdAt().isAfter(lastUpdated)) {
+
+                                            synchronized (trackedLinks) {
+                                                trackedLinks.put(url, issue.createdAt());
+                                            }
+                                            httpSender.sendNotification(url, extractUserIds(linkInfo), issue);
+                                        }
+                                    },
+                                    error -> ServerLogger.LOGGER
+                                            .atError()
+                                            .setMessage("Ошибка при проверке обновлений для ссылки: " + url
+                                                    + ", ошибка: " + error.getMessage())
+                                            .log());
+                    GIT_HUB_SERVICE
+                            .getInfoFromPullRequest(url)
+                            .subscribe(
+                                    pullRequest -> {
+                                        Instant lastUpdated = trackedLinks.get(url);
+                                        if (lastUpdated == null
+                                                || pullRequest.createdAt().isAfter(lastUpdated)) {
+                                            synchronized (trackedLinks) {
+                                                trackedLinks.put(url, pullRequest.createdAt());
+                                            }
+                                            httpSender.sendNotification(url, extractUserIds(linkInfo), pullRequest);
+                                        }
+                                    },
+                                    error -> ServerLogger.LOGGER
+                                            .atError()
+                                            .setMessage("Ошибка при проверке обновлений для пул реквеста ссылки: " + url
+                                                    + "\nОшибка " + error.getMessage())
+                                            .log());
+                }
+            } else if (checkLink.isStackOverflowLink(url)) {
                 ServerLogger.LOGGER
                         .atInfo()
                         .setMessage("Проверяем наличие обновлений по ссылке с стековерфлоу.")
                         .log();
-                STACKOVERFLOW_SERVICE
-                        .getLastActivityDate(link)
-                        .subscribe(
-                                lastActivityDate -> {
-                                    Instant lastUpdated = null;
-                                    if (TRACKED_LINKS.containsKey(link)) {
-                                        lastUpdated = TRACKED_LINKS.get(link);
-                                    }
-                                    if (lastUpdated == null || lastActivityDate.isAfter(lastUpdated)) {
-                                        TRACKED_LINKS.put(link, lastActivityDate);
-                                        notifyUser(link);
-                                    }
-                                },
-                                error -> ServerLogger.LOGGER
-                                        .atError()
-                                        .setMessage("Ошибка при проверке обновлений для ссылки: " + link + ", ошибка: "
-                                                + error.getMessage())
-                                        .log());
+                synchronized (STACKOVERFLOW_SERVICE) {
+                    STACKOVERFLOW_SERVICE
+                            .getInfoFromStackOverflow(url)
+                            .subscribe(
+                                    info -> {
+                                        Instant lastUpdated = trackedLinks.get(url);
+                                        if (lastUpdated == null || info.time().isAfter(lastUpdated)) {
+                                            synchronized (trackedLinks) {
+                                                trackedLinks.put(url, info.time());
+                                            }
+                                            httpSender.sendNotification(url, extractUserIds(linkInfo), info);
+                                        }
+                                    },
+                                    error -> ServerLogger.LOGGER
+                                            .atError()
+                                            .setMessage("Ошибка при проверке обновлений для ссылки: " + url
+                                                    + ", ошибка: " + error.getMessage())
+                                            .log());
+                }
             }
+        } catch (Exception ex) {
+            ServerLogger.LOGGER
+                    .atError()
+                    .setMessage("Ошибка при проверке ссылки: " + url + ": " + ex.getMessage())
+                    .log();
         }
     }
 
-    private void notifyUser(String link) {
-
-        LinkUpdateRequestDTO linkUpdateRequestDTO = new LinkUpdateRequestDTO();
-        RestTemplate restTemplate = new RestTemplate();
-        linkUpdateRequestDTO.setUrl(link);
-        linkUpdateRequestDTO.setId(LINKS.get(link).get(0));
-        List<Long> chatsId = new ArrayList<>();
-
-        for (int i = 0; i < LINKS.get(link).size(); i++) {
-            chatsId.add(LINKS.get(link).get(i));
-        }
-
-        linkUpdateRequestDTO.setTgChatIds(chatsId);
-        linkUpdateRequestDTO.setDescription("Пришло обновление по ссылке: " + link);
-        String botUrl = "http://localhost:8080/updates";
-        HttpEntity<LinkUpdateRequestDTO> httpEntity = new HttpEntity<>(linkUpdateRequestDTO);
-
-        ResponseEntity<String> response = restTemplate.exchange(botUrl, HttpMethod.POST, httpEntity, String.class);
-        ServerLogger.LOGGER
-                .atInfo()
-                .setMessage("Получен ответ:" + response.getBody())
-                .log();
+    private List<Long> extractUserIds(LinkInfo linkInfo) {
+        return linkInfo.users().stream().map(u -> u.userId()).toList();
     }
 }
