@@ -5,19 +5,23 @@ import backend.academy.dto.BadResponseDTO;
 import backend.academy.dto.DeleteLinkRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.model.Update;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /** Класс для удаления ссылки введенной пользователем с сервера. */
+@Component
 public class DeleteLinkCommand implements ServerCommands {
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
+    @CacheEvict(value = "list_cache", key = "#update.message().chat().id().toString()")
     public String applyCommand(String link, Update update) {
 
         DeleteLinkRequestDTO deleteLinkRequestDTO = new DeleteLinkRequestDTO();

@@ -99,10 +99,10 @@
         </dependency>
 
         <!-- Kafka -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.kafka</groupId>-->
-        <!--            <artifactId>spring-kafka</artifactId>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
 
         <!-- Actuator -->
         <dependency>
@@ -117,6 +117,11 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
         </dependency>
 
         <dependency>

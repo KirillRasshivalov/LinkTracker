@@ -1,10 +1,13 @@
 package backend.academy.dto;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.Serializable;
 import java.util.List;
+import lombok.NoArgsConstructor;
 
 @SuppressFBWarnings("PA_PUBLIC_PRIMITIVE_ATTRIBUTE")
-public class ShowListResponseDTO {
+@NoArgsConstructor
+public class ShowListResponseDTO implements Serializable {
     public List<LinkInfoDTO> links;
     Long size;
 

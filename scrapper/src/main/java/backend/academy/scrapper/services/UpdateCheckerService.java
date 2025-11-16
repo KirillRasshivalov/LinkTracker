@@ -2,7 +2,7 @@ package backend.academy.scrapper.services;
 
 import backend.academy.scrapper.managers.CheckLink;
 import backend.academy.scrapper.models.LinkInfo;
-import backend.academy.scrapper.notifications.HTTPSender;
+import backend.academy.scrapper.notifications.Sender;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
@@ -26,22 +26,26 @@ public class UpdateCheckerService {
     private final StackOverflowService STACKOVERFLOW_SERVICE;
     private final DatabaseService DATABASE_SERVICE;
     private final CheckLink checkLink = new CheckLink();
+    private final Sender SENDER;
 
     private final Map<String, Instant> trackedLinks = new ConcurrentHashMap<>();
 
-    private final ExecutorService executor = Executors.newFixedThreadPool(10);
+    private final ExecutorService executor = Executors.newFixedThreadPool(1);
 
     public UpdateCheckerService(
-            GitHubService gitHubService, StackOverflowService stackOverflowService, DatabaseService databaseService) {
+            GitHubService gitHubService,
+            StackOverflowService stackOverflowService,
+            DatabaseService databaseService,
+            Sender sender) {
         this.GIT_HUB_SERVICE = gitHubService;
         this.STACKOVERFLOW_SERVICE = stackOverflowService;
         this.DATABASE_SERVICE = databaseService;
+        this.SENDER = sender;
     }
 
     @Scheduled(fixedRate = 10000)
     @Transactional
     public void checkForUpdates() {
-        HTTPSender httpSender = new HTTPSender();
         int pageSize = 100;
         int pageNumber = 0;
 
@@ -52,13 +56,13 @@ public class UpdateCheckerService {
             page = DATABASE_SERVICE.showLinks(pageable);
 
             for (LinkInfo linkInfo : page.getContent()) {
-                var unused = executor.submit(() -> processLink(linkInfo, httpSender));
+                var unused = executor.submit(() -> processLink(linkInfo));
             }
             pageNumber++;
         } while (page.hasNext());
     }
 
-    private void processLink(LinkInfo linkInfo, HTTPSender httpSender) {
+    private void processLink(LinkInfo linkInfo) {
         String url = linkInfo.link();
         try {
             if (checkLink.isGitHubLink(url)) {
@@ -78,7 +82,7 @@ public class UpdateCheckerService {
                                             synchronized (trackedLinks) {
                                                 trackedLinks.put(url, issue.createdAt());
                                             }
-                                            httpSender.sendNotification(url, extractUserIds(linkInfo), issue);
+                                            SENDER.sendNotification(url, extractUserIds(linkInfo), issue);
                                         }
                                     },
                                     error -> ServerLogger.LOGGER
@@ -96,7 +100,7 @@ public class UpdateCheckerService {
                                             synchronized (trackedLinks) {
                                                 trackedLinks.put(url, pullRequest.createdAt());
                                             }
-                                            httpSender.sendNotification(url, extractUserIds(linkInfo), pullRequest);
+                                            SENDER.sendNotification(url, extractUserIds(linkInfo), pullRequest);
                                         }
                                     },
                                     error -> ServerLogger.LOGGER
@@ -120,7 +124,7 @@ public class UpdateCheckerService {
                                             synchronized (trackedLinks) {
                                                 trackedLinks.put(url, info.time());
                                             }
-                                            httpSender.sendNotification(url, extractUserIds(linkInfo), info);
+                                            SENDER.sendNotification(url, extractUserIds(linkInfo), info);
                                         }
                                     },
                                     error -> ServerLogger.LOGGER
