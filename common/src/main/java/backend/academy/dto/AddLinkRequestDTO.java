@@ -3,9 +3,9 @@ package backend.academy.dto;
 import java.util.List;
 
 public class AddLinkRequestDTO {
-    public String link;
-    public List<String> tags;
-    public List<String> filters;
+    String link;
+    List<String> tags;
+    List<String> filters;
 
     public void setLink(String link) {
         this.link = link;

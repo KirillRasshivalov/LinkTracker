@@ -3,9 +3,7 @@ package backend.academy.bot.managers.data;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Класс для сохранения данных конкретного пользователя по отправки ссылки.
- */
+/** Класс для сохранения данных конкретного пользователя по отправки ссылки. */
 public class UserDataManager {
 
     private final Map<Long, UserData> userDataMap = new HashMap<>();

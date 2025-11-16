@@ -1,77 +1,90 @@
 package backend.academy.bot.commands.export;
 
-import backend.academy.dto.AddLinkResponseDTO;
-import backend.academy.dto.BadResponseDTO;
+import backend.academy.bot.services.BotLogger;
 import backend.academy.dto.AddLinkRequestDTO;
-import backend.academy.loggs.LoggFactory;
+import backend.academy.dto.BadResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.model.Update;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import static backend.academy.bot.LoggComponent.loggFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
-/**
- * Класс для отправки новой отслеживаемой ссылки на скрепер и ожидающий ответа от него.
- */
+/** Класс для отправки новой отслеживаемой ссылки на скрепер и ожидающий ответа от него. */
+@SuppressWarnings("StringSplitter")
 public class AddLinkCommand implements ServerCommands {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private AddLinkRequestDTO lastRequestDTO;
 
     @Override
     public String applyCommand(@NotNull String command, @NotNull Update update) {
-        loggFactory.addLog("Команда на добавление ссылки " + command);
+
+        BotLogger.LOGGER
+                .atInfo()
+                .setMessage("Команда на добавление ссылки " + command)
+                .log();
         AddLinkRequestDTO collectionUpdateRequestDTO = new AddLinkRequestDTO();
+        String serverUrl = "http://localhost:8081/links";
 
         String[] parts = command.split(" < ");
         String link = parts[0].trim();
-        List<String> tags = Arrays.stream(parts[1].trim().split(" "))
-            .collect(Collectors.toList());
-        List<String> filters = Arrays.stream(parts[2].trim().split(" "))
-            .collect(Collectors.toList());
+        List<String> tags = Arrays.stream(parts[1].trim().split(" ")).collect(Collectors.toList());
+        List<String> filters = Arrays.stream(parts[2].trim().split(" ")).collect(Collectors.toList());
 
         collectionUpdateRequestDTO.setLink(link);
         collectionUpdateRequestDTO.setTags(tags);
         collectionUpdateRequestDTO.setFilters(filters);
+        this.lastRequestDTO = collectionUpdateRequestDTO;
 
-        String serverUrl = "http://localhost:8081/links";
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("tg-chat-id", update.message().chat().id().toString());
         HttpEntity<AddLinkRequestDTO> requestEntity = new HttpEntity<>(collectionUpdateRequestDTO, headers);
 
         try {
-            ResponseEntity<?> response = restTemplate.postForEntity(
-                serverUrl,
-                requestEntity,
-                String.class
-            );
-            if (response.hasBody()) {
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    AddLinkResponseDTO collectionUpdateResponseDTO = objectMapper.readValue(
-                        response.getBody().toString(),
-                        AddLinkResponseDTO.class
-                    );
-                    return "Ссылка " + collectionUpdateResponseDTO.getUrl() + " успешно добавлена.";
-                } else if (response.getStatusCode().is4xxClientError()) {
-                    BadResponseDTO badResponseDTO = objectMapper.readValue(
-                        response.getBody().toString(),
-                        BadResponseDTO.class
-                    );
-                    return badResponseDTO.getExceptionName();
-                } else {
-                    LoggFactory.addLog("Неопознаная ошибка" + response.getStatusCode());
-                    return "Что то пошло не так.";
-                }
+            ResponseEntity<String> response = restTemplate.postForEntity(serverUrl, requestEntity, String.class);
+            BotLogger.LOGGER
+                    .atInfo()
+                    .setMessage("Ответ от сервера: " + response.getStatusCode() + " - " + response.getBody())
+                    .log();
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return "Ссылка успешно добавлена.";
+            } else {
+                return "Ошибка в добавление ссылки: " + response.getStatusCode();
+            }
+        } catch (HttpClientErrorException e) {
+            BotLogger.LOGGER
+                    .atError()
+                    .setMessage("Ошибка 400 при добавлении ссылки: " + e.getResponseBodyAsString())
+                    .log();
+            try {
+                BadResponseDTO errorResponse =
+                        OBJECT_MAPPER.readValue(e.getResponseBodyAsString(), BadResponseDTO.class);
+
+                return errorResponse.getDescription();
+            } catch (Exception jsonException) {
+                BotLogger.LOGGER
+                        .atError()
+                        .setMessage("Ошибка при разборе JSON ответа: " + jsonException.getMessage())
+                        .log();
+
+                return "Ошибка 400, но не удалось разобрать ответ.";
             }
         } catch (Exception e) {
-            LoggFactory.addLog(e.getMessage());
+            BotLogger.LOGGER.atError().setMessage("Неизвестная ошибка: " + e).log();
+
+            return "Что-то пошло не так.";
         }
-        return null;
+    }
+
+    public AddLinkRequestDTO getLastRequestDTO() {
+        return lastRequestDTO;
     }
 }

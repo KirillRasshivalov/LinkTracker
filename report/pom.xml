@@ -10,33 +10,29 @@
 
     <artifactId>report</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>backend.academy</groupId>
-            <artifactId>bot</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>backend.academy</groupId>
-            <artifactId>scrapper</artifactId>
-            <version>${revision}</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>report-aggregate</id>
-                        <goals>
-                            <goal>report-aggregate</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.36</version>
+                        </path>
+                        <path>
+                            <groupId>com.google.errorprone</groupId>
+                            <artifactId>error_prone_core</artifactId>
+                            <version>2.28.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Xplugin:ErrorProne</arg>
+                        <arg>-XDcompilePolicy=simple</arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>

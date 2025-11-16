@@ -115,7 +115,7 @@
         <dependency>
             <groupId>backend.academy</groupId>
             <artifactId>common</artifactId>
-            <version>1.0</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <!--        <dependency>-->
@@ -123,6 +123,7 @@
         <!--            <artifactId>spring-kafka-test</artifactId>-->
         <!--            <scope>test</scope>-->
         <!--        </dependency>-->
+
     </dependencies>
 
     <build>
@@ -145,7 +146,8 @@
                     </annotationProcessorPaths>
                     <compilerArgs>
                         <arg>-Xplugin:ErrorProne</arg>
-                        <arg>-XDcompilePolicy=simple</arg> <!-- Требуется для ErrorProne -->
+                        <arg>-XDcompilePolicy=simple</arg>
+                        <!-- Требуется для ErrorProne -->
                     </compilerArgs>
                 </configuration>
             </plugin>
